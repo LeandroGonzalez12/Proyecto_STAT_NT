@@ -1,0 +1,311 @@
+---
+title: "Proyecto"
+author: "poner nombres"
+date: "29/6/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# **Proyecto Final** 
+
+
+
+## Nuevas Teconologias para el analisis estadistico de datos
+\pagebreak
+
+## Introduccion
+
+Debido al virus de la Covid-19, desde principios de 2020 nos encontramos en emergencia sanitaria, la cual ha dejado un elevado numero de fallecidos a nivel mundial y cambiando completamente nuestras vidas.
+En Uruguay, el numero de casos positivos y fallecidos ha venido en aumento de forma exponencial desde 2020. Asi mismo, en enero 2021 comenzo el plan de vacunacion, con el cual se espera dismunir los ingresos a CTI, la cantidad de fallecidos y eventualmente adquirir la inmunidad de rebaño.
+
+En base  a esto, nos vimos interesados en seguir el plan de vacunacion en Uruguay, estudiando por ejemplo como el mismo ha influido en los casos positivos, fallecidos, etc.
+
+Para esto, utilizamos 2 conjuntos de datos. 
+
+#agregar datos, descripcion de los mismos, fuentes, etc.
+
+
+Antes de poder dar comienzo al analisis exploratorio, limpiamos y reestructuramos algunos datos. De forma que el anaalisis sea mas claro.
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(ggpmisc)
+```
+
+```{r}
+#cargamos datos de vacunacion.
+uruguay <- read_csv("data/Uruguay.csv") 
+
+#dado que los nombres de las variables se encunetran en ingles, se renombran para facilitar la interpretacion.
+uruguay <- uruguay %>% rename(diario_coronavac = daily_coronavac,acum_coronavac = total_coronavac,primDiario_coronavac = people_coronavac,
+                              segDiario_coronavac  = fully_coronavac,diario_pfizer = daily_pfizer,acum_pfizer = total_pfizer,primDiario_pfizer = people_pfizer,
+                              segDiario_pfizer = fully_pfizer,diario_astrazeneca = daily_astrazeneca,acum_astrazeneca = total_astrazeneca,
+                              primDiario_astrazeneca = people_astrazeneca,segDiario_astrazeneca = fully_astrazeneca)
+
+#Del data.frame anterior, nos interesan en particular ciertas columnas. Tambien se reestructuran datos y cambian nombre de los departamentos.
+vacunacion_uru<- uruguay %>% select(-c(1,3:29),-contains("res")) %>% pivot_longer(cols = c(starts_with("total"),starts_with("fully"),
+                                                                                    starts_with("daily"),starts_with("people")),names_to = "departamento",values_to = c("total")) %>%  
+  separate(col = departamento,into = c("arranca","depar"))%>% pivot_wider(names_from = arranca,values_from = total)%>% 
+  mutate(depar = recode(depar, 'ar'='Artigas', 'ca'='Canelones', 'cl'='Cerro Largo', 'co'='Colonia', 
+                        'du'='Durazno','fd'='Florida', 'fs'='Flores', 'la'='Lavalleja', 'ma'='Maldonado','mo'='Montevideo',
+                        'pa'='Paysandú', 'rn'='Rio Negro','ro'='Rocha','rv'='Rivera','sa'='Salto','sj'='San José','so'='Soriano',
+                        'ta'='Tacuarembó', 'tt'='Treinta y Tres')) %>% mutate(depar = as.factor(depar))
+
+
+#se crea data.frame con los tipos de vacuna 
+total_lab <- select(uruguay,date,diario_coronavac,acum_coronavac,primDiario_coronavac,segDiario_coronavac,diario_pfizer,         
+                    acum_pfizer,primDiario_pfizer,segDiario_pfizer,diario_astrazeneca,acum_astrazeneca,primDiario_astrazeneca,segDiario_astrazeneca,
+                    people_vaccinated,people_fully_vaccinated,daily_vaccinated,total_vaccinations,daily_agenda,daily_pogress)
+
+
+##El conjunto de datos Deaths muestra los datos de fallecimiento segun edad, pero no por departamento, actualizado hasta el dia 22/6
+muertes_edad <- read_csv("data/Deaths.csv")
+
+##De dichos datos, se eligen las primeras 17 columnas, ya que las otras son tramos distintos de edad.
+#estos tramos son excluyentes y cubren de 0 a 115
+
+muertes_edad <-muertes_edad %>% select(1:17) %>% pivot_longer(cols = c(starts_with("total"),starts_with("daily")),
+                                                              names_to = "tramo_etario",values_to = "numeros")
+muertes_edad <-muertes_edad %>% separate(col = tramo_etario, into = c("arranca","tramo"),sep = 5)
+muertes_edad <-muertes_edad %>% pivot_wider(names_from = arranca,values_from = numeros)
+muertes_edad <-muertes_edad %>% mutate(tramo = 
+                                         recode(tramo, '_0_17'  = '[0,17]' , '_18_24'  = '[18,24]' ,'_25_34' = '[25,34]', '_35_44'  = '[35,44]' ,
+                                                '_45_54' = '[45,54]', '_55_64'  = '[55,64]' ,'_65_74' = '[65,74]', '_75_115' = '[75,115]')) %>% 
+  mutate(tramo_etario = as.factor(tramo)) %>% select(-tramo)
+
+##Se cargan datos de vacunacion por departamento
+departamentos <- read_csv("data/Regions.csv")
+
+### se cargan los datos del GUIAD
+por_depto <- read_csv("data/estadisticasUY_porDepto_detalle.csv")
+nacional  <- read_csv("data/estadisticasUY.csv")
+
+###separamos en 2 base de datos
+
+labs <- total_lab %>% select(date,c(contains("pfizer"),contains("coronavac"),contains("astrazeneca")))
+total <- total_lab %>% select(-c(contains("pfizer"),contains("coronavac"),contains("astrazeneca")))
+
+
+### reestructuramos los datos de laboratorio.
+labs <-labs %>%  pivot_longer(cols = c(ends_with("astrazeneca"),ends_with("pfizer"),ends_with("coronavac")),names_to = "laboratorio",
+                              values_to = "numeros")
+labs <- labs %>% separate(col = laboratorio, into = c("arranca","lab"))
+labs <-labs %>% pivot_wider(names_from = arranca,values_from = numeros)
+
+
+```
+
+\pagebreak
+
+Tal y como planteamos en la introduccion, nuestro principal interes se encuentra en el plan de vacunacion, para ellos nos planteamos una serie de preguntas que van a ir guiando este proyecto.
+
+# *Preguntas*
+
+## Pregunta 1
+
+```{r}
+# ¿Como ha evolucionado la cantidad de dosis suministradas diariamente, comparando por laboratorio?
+
+labs %>% ggplot(aes(x = date, y = diario, colour = lab)) +geom_line() +scale_colour_brewer(palette = "Dark2") +
+  scale_x_date(date_breaks = "10 days") + theme(aspect.ratio = 1, axis.text.x = element_text(size = 7, angle = 300, hjust = 0)) +
+  labs(x = "Fecha",y = "Cantidad de dosis en el dia",colour = "Laboratorio")
+
+# ¿Y si solo nos centramos en la segunda dosis?
+labs %>% ggplot(aes(x = date, y = segDiario, colour = lab)) + geom_line() + scale_colour_brewer(palette = "Dark2") +
+  scale_x_date(date_breaks = "10 days") + theme(aspect.ratio = 1, axis.text.x = element_text(size = 7, angle = 300, hjust = 0)) +
+  labs(x = "Fecha",y = "Cantidad de segundas dosis en el dia",colour = "Laboratorio")
+
+# ¿Cual es la proporcion por laboratorio del total de dosis suministradas hasta el 23/6
+tabg <- labs %>% group_by(lab) %>% summarise(max_acum  = max(acum)) 
+
+
+tabg %>% mutate(porc_acum = round(max_acum / sum(max_acum,na.rm = TRUE),2),uno = as.factor(rep(1,3))) %>% 
+  ggplot(aes(y = porc_acum, fill = uno, x = lab)) + geom_bar(stat = "identity") + scale_fill_manual(values = "cadetblue") +
+  theme(legend.position = "none") + scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(y = "Porcentaje de dosis suministradas",x = "Laboratorio")
+
+tabg2 <- labs %>% group_by(lab) %>% summarise(acum_seg  = sum(segDiario,na.rm = TRUE)) 
+
+tabg2 %>% mutate(porc_acum = round(acum_seg / sum(acum_seg,na.rm = TRUE),4),uno = as.factor(rep(1,3))) %>% 
+  ggplot(aes(y = porc_acum, fill = uno, x = lab)) + geom_bar(stat = "identity") + scale_fill_manual(values = "darkgreen") +
+  theme(legend.position = "none") + scale_y_continuous(labels = scales::percent_format(accuracy = 2)) +
+  labs(y = "Proporción de segundas dosis suministradas",x = "Laboratorio")
+
+```
+
+\pagebreak
+
+## Pregunta 2
+
+```{r}
+# ¿Como fue la evolucion de casos positivos dependiendo el departamento?
+
+por_depto$fecha = as.Date(por_depto$fecha, format = "%d/%m/%Y")
+por_depto <- por_depto %>% mutate(departamento = recode(departamento, 'Artigas(UY-AR)'='Artigas', 'Canelones(UY-CA)'='Canelones', 
+             'Cerro Largo(UY-CL)'='Cerro Largo', 'Colonia(UY-CO)'='Colonia', 'Durazno(UY-DU)'='Durazno',
+             'Flores(UY-FS)'='Flores','Florida(UY-FD)'='Florida','Lavalleja(UY-LA)'='Lavalleja', 'Maldonado(UY-MA)'='Maldonado',
+             'Montevideo(UY-MO)'='Montevideo','Paysand?(UY-PA)'='Paysandu', 'R?o Negro(UY-RN)'='Rio Negro',
+             'Rivera(UY-RV)'='Rivera','Rocha(UY-RO)'='Rocha','Salto(UY-SA)'='Salto','San Jos?(UY-SJ)'='San Jose',
+             'Soriano(UY-SO)'='Soriano','Tacuaremb?(UY-TA)'='Tacuarembo', 'Treinta y Tres(UY-TT)'='Treinta y Tres'))
+por_depto %>% ggplot(aes(x = fecha, y = cantCasosNuevosCALC, colour = departamento)) + geom_line(size = 0.05) + scale_x_date(date_breaks = "90 days") + 
+  theme(aspect.ratio = 1, axis.text.x = element_text(size = 7, angle = 300, hjust = 0)) +
+  labs(x = "Fecha",y = "Cantidad de casos positivos",colour = "Departamento") + facet_wrap(~departamento) + scale_y_log10()
+
+# ¿Y si vemos cuantas personas han fallecido por departamento?
+por_depto %>% group_by(departamento) %>% summarise(cantidad_fallecidos = sum(cantFallecidos, na.rm = TRUE)) %>%
+  ggplot(aes(y=reorder(departamento,-cantidad_fallecidos, na.rm=TRUE), x = cantidad_fallecidos, fill = departamento)) + 
+  geom_col() + theme(aspect.ratio = 1) 
+```
+
+
+\pagebreak
+
+## Pregunta 3
+
+```{r}
+# Hasta el 23 de junio, ¿todas las personas con primera dosis antes del 25 mayo recibieron la segunda dosis? 
+# Si no es así, ¿Cuántas personas no se dieron la segunda dosis?
+
+uruguay %>% 
+  select(date, vaccine, total_vaccinations, people_vaccinated,
+         people_fully_vaccinated, daily_vaccinated) %>% 
+  filter(date <= "2021-05-26") %>% 
+  ggplot(aes(x = date, y = daily_vaccinated)) +
+  geom_line() +
+  scale_colour_brewer(palette = "Dark2") +
+  theme(aspect.ratio = 1/3,
+        axis.text.x = element_text(size = 7, hjust = 0)) +
+  labs(x="Fecha", y="Cantidad de dosis en el día")
+
+
+
+completas_hasta_mayo <- 
+  vacunacion_uru %>% 
+  select(date, depar, total, people) %>%
+  filter(date == "2021-05-26") %>% 
+  group_by(depar) 
+
+
+completas_hasta_junio <-
+  vacunacion_uru %>% 
+  select(date, depar, total, fully) %>% 
+  filter(date == "2021-06-23") %>% 
+  group_by(depar) 
+
+completas <- merge(x=completas_hasta_mayo, y=completas_hasta_junio, all=TRUE) %>% 
+  pivot_longer(cols = c("people","fully"), names_to = "Numero_dosis", 
+               values_to ="Cant_dosis") %>% 
+  group_by(depar, Numero_dosis) %>% 
+  summarise(Cant_dosis = sum(Cant_dosis, na.rm=TRUE))
+
+completas%>% 
+  ggplot(aes(x=Numero_dosis, y=Cant_dosis, fill=Numero_dosis))+
+  geom_col(width=1)+ theme(aspect.ratio = 1)+
+  scale_fill_brewer(palette = "Dark2", labels=c('fully'='2 dosis',
+                                                'people'='1 dosis'))+
+  scale_x_discrete(labels=c('fully'='2 dosis',
+                            'people'='1 dosis'))+
+  labs(x="Dosis por persona", y="Cantidad de dosis", fill="Dosis por persona")+
+  facet_wrap(~depar)
+
+#Arreglar que quede en porcentajes y que se vea mas claro. 
+
+
+
+
+#Hago a nivel pais:
+completas_pais_hasta_mayo<-
+  uruguay %>% 
+  select(date, total_vaccinations, people_vaccinated) %>%
+  filter(date == "2021-05-26") 
+
+completas_pais_hasta_junio<-
+  uruguay %>% 
+  select(date, total_vaccinations, people_fully_vaccinated) %>%
+  filter(date == "2021-06-23") 
+
+completas_pais<-merge(x=completas_pais_hasta_mayo, y=completas_pais_hasta_junio, all=TRUE) %>% 
+  pivot_longer(cols = c("people_vaccinated","people_fully_vaccinated"),
+               names_to = "Numero_dosis", 
+               values_to ="Cant_dosis") %>% 
+  group_by(Numero_dosis) %>% 
+  summarise(Cant_dosis = sum(Cant_dosis, na.rm=TRUE)) %>% 
+  ggplot(aes(x=Numero_dosis, y=Cant_dosis, fill=Numero_dosis))+
+  geom_col()+ theme(aspect.ratio = 1/2)+
+  scale_fill_brewer(palette = "Dark2", labels=c('people_fully_vaccinated'='2 dosis',
+                                                'people_vaccinated'='1 dosis'))+
+  scale_x_discrete(labels=c('people_fully_vaccinated'='2 dosis',
+                            'people_vaccinated'='1 dosis'))+
+  labs(x="Dosis por persona", y="Cantidad de dosis", fill="Dosis por persona")
+
+#completas_pais
+
+#Personas con una dosis pero que no se dieron la segunda a nivel país:
+# 1688019-1458403=229616 personas.
+#Hacer el nivel pais con porcentajes.
+
+
+```
+
+\pagebreak
+
+## Pregunta 4
+
+```{r}
+#¿Se podría decir que la cantidad de fallecidos diarios a disminuido ha medida que avanza el plan de vacunación?
+
+muertes_diarias<-muertes_edad %>% group_by(date) %>% summarise(muertes_totales_diarias=sum(daily))
+personas_totalmente_vacunadas<-uruguay %>% select(date, people_fully_vaccinated)
+
+muertes_vacunados<-merge(muertes_diarias, personas_totalmente_vacunadas)
+
+ggplot(data=muertes_vacunados)+geom_line(aes(x=date, y=people_fully_vaccinated))+ labs(x='Fecha', y='Personas vacunadas con ambas dosis')
+
+#Podemos ver que la cantidad de personas vacunadas con ambas dosis crece de forma aparentemente exponencial. De todas fomras, a partir de mediados de mayo hasta junio, se podria observar un pequeño estancamiento.
+
+ggplot(data=muertes_vacunados)+geom_line(aes(x=date, y=muertes_totales_diarias))+ labs(x='fecha', y='Cantidad de fallecidos por día')+ stat_peaks(aes(x=date, y=muertes_totales_diarias), colour = "red") +
+  stat_peaks(aes(x=date, y=muertes_totales_diarias),geom = "text", colour = "red",vjust = 5, angle=0)
+
+muertes_vacunados %>% select(muertes_totales_diarias) %>% max()
+
+#Por otro lado, la cantidad de fallecimientos diarios presenta mayor variación. Hasta abril, se podría osbervar cierta tendencia exponencial. hata junio, dicho númeor parece en promedio mantenerse, hasta el 13/06/2021 donde se registra un pico de muertes, por otro lado el mayor pico se presenta el día 19/06/2021 con 91 muertes.
+
+ggplot(data=muertes_vacunados,aes(x=people_fully_vaccinated, y=muertes_totales_diarias))+geom_line()+ labs(x='Personas vacunadas con ambas dosis', y='Cantidad de fallecidos por día')
+
+#Hasta las 250.000 personas vacunadas con ambas dosis, podemos ver una tendencia a crecer la cantidad de fallecidos diarios, parece estabilizarse hasta que llegamos a las 1.000.000 personas, presentando los 2 picos antes mencionados. 
+#Pareciera presentar una baja tendencia a disminuir la cantidad de fallecimientos diarios, pero no se si se puede comprobar con estos datos
+
+```
+
+\pagebreak
+
+## Pregunta 5
+
+```{r}
+#¿Se podría decir que en los departamentos más poblados, como Montevideo y Canelones el porcentaje de vacunados es mayor?
+
+departamentos %>% select(Region, Population, Vaccinated) %>% mutate(proporcion=Vaccinated/sum(Population)) %>% 
+  arrange(desc(proporcion)) %>% 
+  ggplot(aes(reorder(Region, proporcion), proporcion, fill=Region))+geom_bar(stat='identity')+coord_flip()+labs(x='Departamentos', y='Porporción de vacunados segun población total', fill='Departamentos')+theme(legend.position = 'none')
+
+#podemos ver que los 3 departamentos mas poblados, son también, los 3 departamentos con mayor proporción de vacunados
+
+#paleta Dark2 no se puede utilizar para este gráfico, buscar otra que si.
+#ver de pasar a porcentajes, se entiende mejor creo yo. si se pone así, agregar porcentajes en cada barra para que quede mas claro
+
+
+```
+
+\pagebreak
+
+## Shiny
+
+Aún no definido, se podría utilizar la primera base de datos que escogimos y en base a lo que predecía la gente que iba a suceder el avance de la pandemia, realizar un comparativa con lo que realmente sucedió. Mucha gente fue muy optimista y lamentablemente la pandemia se descontroló.
+
+
+
