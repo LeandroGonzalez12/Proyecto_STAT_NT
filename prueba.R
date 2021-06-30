@@ -156,7 +156,7 @@ por_depto %>% group_by(departamento) %>% summarise(cantidad_fallecidos = sum(can
 
 
 
-#### Pregunta 6)
+#### Pregunta 7)
 ## Hasta el 23 de junio, ¿todas las personas con primera dosis antes del 25 mayo
 ## recibieron la segunda dosis? Si no es así, ¿Cuántas personas no se dieron 
 ## la segunda dosis?
@@ -206,8 +206,6 @@ completas%>%
 #Arreglar que quede en porcentajes y que se vea mas claro. 
 
 
-
-
 #Hago a nivel pais:
 completas_pais_hasta_mayo<-
   uruguay %>% 
@@ -224,24 +222,37 @@ completas_pais<-merge(x=completas_pais_hasta_mayo, y=completas_pais_hasta_junio,
                names_to = "Numero_dosis", 
                values_to ="Cant_dosis") %>% 
   group_by(Numero_dosis) %>% 
-  summarise(Cant_dosis = sum(Cant_dosis, na.rm=TRUE)) %>% 
+  summarise(Cant_dosis = sum(Cant_dosis, na.rm=TRUE))
+
+completas_pais %>% 
   ggplot(aes(x=Numero_dosis, y=Cant_dosis, fill=Numero_dosis))+
-  geom_col()+ theme(aspect.ratio = 1/2)+
+  geom_col()+ theme(aspect.ratio = 2)+
   scale_fill_brewer(palette = "Dark2", labels=c('people_fully_vaccinated'='2 dosis',
                                                 'people_vaccinated'='1 dosis'))+
   scale_x_discrete(labels=c('people_fully_vaccinated'='2 dosis',
                             'people_vaccinated'='1 dosis'))+
   labs(x="Dosis por persona", y="Cantidad de dosis", fill="Dosis por persona")
 
-completas_pais
-
 #Personas con una dosis pero que no se dieron la segunda a nivel país:
 # 1688019-1458403=229616 personas.
 #Hacer el nivel pais con porcentajes.
 
+# probar con: (..count..)/sum(..count..) y https://sebastiansauer.github.io/percentage_plot_ggplot2_V2/
 
 
 
+completas_pais %>% 
+  ggplot(aes(x=Numero_dosis,y=Cant_dosis, fill=Numero_dosis))+
+  geom_bar(position = "dodge", stat = "identity")+ 
+  theme(aspect.ratio = 2)+
+  scale_fill_brewer(palette = "Dark2", labels=c('people_fully_vaccinated'='2 dosis',
+                                                'people_vaccinated'='1 dosis'))+
+  scale_x_discrete(labels=c('people_fully_vaccinated'='2 dosis',
+                            'people_vaccinated'='1 dosis'))+
+  labs(x="Dosis por persona", y="Cantidad de dosis", fill="Dosis por persona")
 
 
 
+aindamais<-merge(x=completas_pais_hasta_mayo, y=completas_pais_hasta_junio, all=TRUE) %>% 
+  mutate(suma=people_vaccinated+people_fully_vaccinated, na.rm=TRUE)
+  select(people_vaccinated, people_fully_vaccinated)
