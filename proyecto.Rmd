@@ -137,7 +137,6 @@ Tal y como planteamos en la introduccion, nuestro principal interes se encuentra
 ### Pregunta 1 - ¿Como ha evolucionado la cantidad de dosis suministradas diariamente, comparando por laboratorio?
 
 ```{r codigo pregunta1s1, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center', fig.cap="Linea temporal mostrando la evolucion de cantidad de dosis de vacunas suministradas por dia segun laboratorio"}
-
 labs %>% ggplot(aes(x = date, y = diario, colour = lab)) +geom_line() + 
   scale_colour_brewer(palette = "Dark2") +scale_x_date(date_breaks = "10 days") + 
   theme(aspect.ratio = 1, axis.text.x = element_text(size = 7, angle = 300, hjust = 0)) +
