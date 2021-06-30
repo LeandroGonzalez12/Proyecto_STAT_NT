@@ -32,7 +32,6 @@ Para esto, utilizamos 2 conjuntos de datos. Con el cometido de guiar nuestra inv
 + Aplicación shiny
 + Conclusiones
 
-\pagebreak
 
 ## **Datos**
 
@@ -43,7 +42,7 @@ datos del [GUIAD(Grupo Uruguayo Interdisciplinario de Análisis de Datos)](https
 
 Antes de poder dar comienzo al análisis exploratorio, limpiamos y reestructuramos algunos datos. De forma que el análisis sea mas claro.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE,message=FALSE}
 library(tidyverse)
 library(ggpmisc)
 ```
@@ -143,18 +142,16 @@ labs %>% ggplot(aes(x = date, y = diario, colour = lab)) +geom_line() +
   labs(x = "Fecha",y = "Cantidad de dosis en el dia",colour = "Laboratorio")
 ```
 
-#### ¿Y si solo nos centramos en la segunda dosis?
+Han sido 3 las vacunas que se suministraron en Uruguay hasta la fecha : Astrazeneca, Pfizer y Sinovac.
+Se observa con claridad que en la mayoría de los días tomados en cuenta para realizar el gráfico, se suministró más cantidad de dosis con la vacuna del laboratorio de origen chino Sinovac, que con las otras 2. Además los días en que más dosis se suministró fueron entre los primeros 15 días del mes de abril, período que incluyó la semana de turismo, en este lapso temporal se vacunó a población de un gran rango etario que iba desde los 18 años en adelante.
 
-```{r codigo pregunta1s2, echo=FALSE, warning=FALSE,message=FALSE,fig.align='center',fig.cap="Linea temporal mostrando la evolucion de las 2das dosis suministradas segun laboratorio"}
+Por otra parte, la vacuna elaborada por empresa farmacéutica de orígen estadounidense, Pfizer, tuvo su pico en torno al 10 de Abril, hecho que se explica por el comienzo del plan vacunatorio para gran parte de los trabajadores de la Salud ;con excepción de los que trabajan en areas de mayor urgencia, como por ejemplo: block quirurgico, servicios de apoyo CTI,etc, que fueron vacunados en Marzo con Sinovac.
 
-labs %>% ggplot(aes(x = date, y = segDiario, colour = lab)) + geom_line() + 
-  scale_colour_brewer(palette = "Dark2") + scale_x_date(date_breaks = "10 days") + 
-  theme(aspect.ratio = 1, axis.text.x = element_text(size = 7, angle = 300, hjust = 0)) +
-  labs(x = "Fecha",y = "Cantidad de segundas dosis en el dia",colour = "Laboratorio")
-```
-\pagebreak
+Respecto la vacuna desarrollada por el laboratorio Astrazeneca con la Universidad de Oxford,que en primera instancia pretendía suministrarse a las franjas etarias mayores, fue resistida por una gran cantidad de personas. Se observa que sólo a mediados de Abril fueron aplicadas cerca de 20000 dosis, en adelante las cifras fueron considerablemente menores, cuando en realidad existía mayor cantidad disponible.
+Cabe resaltar que la vacuna de AstraZeneca llegó a Uruguay en un momento de dudas sobre sus efectos, al detectarse casos de trombosis tras su aplicación. Por su parte, el MSP y la comunidad científica internacional aseguran que los beneficios son mayores que los posibles riesgos.
 
-#### ¿Cuál es la proporción por laboratorio del total de dosis suministradas hasta el 23/06?
+
+### ¿Cuál es la proporción por laboratorio del total de dosis suministradas hasta el 23/06?
 
 ```{r codigo pregunta1s3, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center', fig.cap="Grafico de barras que representa la proporcion de dosis suministradas por laboratorio"}
 tabg <- labs %>% group_by(lab) %>% summarise(max_acum  = max(acum)) 
@@ -168,21 +165,14 @@ tabg %>% mutate(porc_acum = round(max_acum / sum(max_acum,na.rm = TRUE),2),
   labs(y = "Porcentaje de dosis suministradas",x = "Laboratorio")
 ```
 
-#### ¿Cuál es la proporción por laboratorio del total de dosis suministradas hasta el 23/06?
-
-``` {r codigo pregunta1s4, echo=FALSE, warning=FALSE,message=FALSE,fig.align='center', fig.cap="Grafico de barras que representa la proporcion de 2das dosis suministradas segun laboratorio"}
-
-tabg2 <- labs %>% group_by(lab) %>% summarise(acum_seg  = sum(segDiario,na.rm = TRUE)) 
-
-tabg2 %>% mutate(porc_acum = round(acum_seg / sum(acum_seg,na.rm = TRUE),4),
-  uno = as.factor(rep(1,3))) %>% ggplot(aes(y = porc_acum, fill = uno, x = lab)) + 
-  geom_bar(stat = "identity") + scale_fill_manual(values = "darkgreen") +
-  theme(legend.position = "none") + 
-  scale_y_continuous(labels = scales::percent_format(accuracy = 2)) +
-  labs(y = "Proporción de segundas dosis suministradas",x = "Laboratorio")
-```
-
 \pagebreak
+
+A lo largo del plan de vacunación la proveniente del laboratorio "Sinovac" ha sido la adquirida en mayor cantidad por el Estado uruguayo, además de haber sido provisto por el fondo COVAX; emparejado con esto, la que se brindó en mayor magnitud,alrededor del 75% de las dosis . Además, se vacunó con ella a diversas poblaciones, empezando con los que desempeñaban alguna ocupación de riesgo y gran necesidad (bomberos, policias, personal de la educación), pasando por personas de distintas ocupaciones y edades.
+
+En segundo lugar, la del laboratorio Pfizer se ha aplicado a poblaciones mas específicas como personal de salud y edades en las cuales aún no se habían realizado estudios con la china. En torno al 25% de las dosis fueron de Pfizer.
+Por último, como se comentaba anteriormente, la vacuna astrazeneca además de haberse adquirido en menor proporción, también fue la más resistida. Tan solo cerca del 1% de las dosis que se suministraron en el territorio uruguayo provienen de este laboratorio.
+
+
 
 ### Pregunta 2 - ¿Cómo fue la evolución de casos positivos dependiendo del departamento?
 
