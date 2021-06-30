@@ -161,52 +161,6 @@ por_depto %>% group_by(departamento) %>% summarise(cantidad_fallecidos = sum(can
 ## recibieron la segunda dosis? Si no es así, ¿Cuántas personas no se dieron 
 ## la segunda dosis?
 
-uruguay %>% 
-  select(date, vaccine, total_vaccinations, people_vaccinated,
-         people_fully_vaccinated, daily_vaccinated) %>% 
-  filter(date <= "2021-05-26") %>% 
-  ggplot(aes(x = date, y = daily_vaccinated)) +
-  geom_line() +
-  scale_colour_brewer(palette = "Dark2") +
-  theme(aspect.ratio = 1/3,
-        axis.text.x = element_text(size = 7, hjust = 0)) +
-  labs(x="Fecha", y="Cantidad de dosis en el día")
-
-
-
-completas_hasta_mayo <- 
-  prueba %>% 
-  select(date, depar, total, people) %>%
-  filter(date == "2021-05-26") %>% 
-  group_by(depar) 
-
-
-completas_hasta_junio <-
-  prueba %>% 
-  select(date, depar, total, fully) %>% 
-  filter(date == "2021-06-23") %>% 
-  group_by(depar) 
-
-completas <- merge(x=completas_hasta_mayo, y=completas_hasta_junio, all=TRUE) %>% 
-  pivot_longer(cols = c("people","fully"), names_to = "Numero_dosis", 
-               values_to ="Cant_dosis") %>% 
-  group_by(depar, Numero_dosis) %>% 
-  summarise(Cant_dosis = sum(Cant_dosis, na.rm=TRUE))
-
-completas%>% 
-  ggplot(aes(x=Numero_dosis, y=Cant_dosis, fill=Numero_dosis))+
-  geom_col(width=1)+ theme(aspect.ratio = 1)+
-  scale_fill_brewer(palette = "Dark2", labels=c('fully'='2 dosis',
-                                                'people'='1 dosis'))+
-  scale_x_discrete(labels=c('fully'='2 dosis',
-                            'people'='1 dosis'))+
-  labs(x="Dosis por persona", y="Cantidad de dosis", fill="Dosis por persona")+
-  facet_wrap(~depar)
-
-#Arreglar que quede en porcentajes y que se vea mas claro. 
-
-
-#Hago a nivel pais:
 completas_pais_hasta_mayo<-
   uruguay %>% 
   select(date, total_vaccinations, people_vaccinated) %>%
@@ -222,7 +176,26 @@ completas_pais<-merge(x=completas_pais_hasta_mayo, y=completas_pais_hasta_junio,
                names_to = "Numero_dosis", 
                values_to ="Cant_dosis") %>% 
   group_by(Numero_dosis) %>% 
-  summarise(Cant_dosis = sum(Cant_dosis, na.rm=TRUE))
+  summarise(Cant_dosis = sum(Cant_dosis, na.rm=TRUE)) %>% 
+  group_by(Numero_dosis, Cant_dosis) %>% 
+  summarise(porcentaje=round(Cant_dosis/1688019*100, 2))
+
+completas_pais %>% 
+  ggplot(aes(x=Numero_dosis, y=porcentaje, fill=Numero_dosis))+
+  geom_col()+ theme(aspect.ratio = 2)+
+  scale_fill_brewer(palette = "Dark2", labels=c('people_fully_vaccinated'='2 dosis',
+                                                'people_vaccinated'='1 dosis'))+
+  scale_x_discrete(labels=c('people_fully_vaccinated'='2 dosis',
+                            'people_vaccinated'='1 dosis'))+
+  labs(title="Más del 13% de los vacunados con primera dosis no se dieron la segunda",
+       caption="De todas las personas que se vacunaron con una dosis hasta el 26/05/2021, 
+       un 13,6% de las personas no se dieron la segunda dosis a los 28 días.",
+       x="Dosis por persona", y="Cantidad de dosis",
+       fill="Dosis por persona")+
+  geom_text(aes(x=Numero_dosis, label =paste(porcentaje, '%'), vjust = -0.05))+
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 12), 
+        plot.caption=element_text(hjust = 0.5))
+
 
 completas_pais %>% 
   ggplot(aes(x=Numero_dosis, y=Cant_dosis, fill=Numero_dosis))+
@@ -231,28 +204,6 @@ completas_pais %>%
                                                 'people_vaccinated'='1 dosis'))+
   scale_x_discrete(labels=c('people_fully_vaccinated'='2 dosis',
                             'people_vaccinated'='1 dosis'))+
-  labs(x="Dosis por persona", y="Cantidad de dosis", fill="Dosis por persona")
-
-#Personas con una dosis pero que no se dieron la segunda a nivel país:
-# 1688019-1458403=229616 personas.
-#Hacer el nivel pais con porcentajes.
-
-# probar con: (..count..)/sum(..count..) y https://sebastiansauer.github.io/percentage_plot_ggplot2_V2/
-
-
-
-completas_pais %>% 
-  ggplot(aes(x=Numero_dosis,y=Cant_dosis, fill=Numero_dosis))+
-  geom_bar(position = "dodge", stat = "identity")+ 
-  theme(aspect.ratio = 2)+
-  scale_fill_brewer(palette = "Dark2", labels=c('people_fully_vaccinated'='2 dosis',
-                                                'people_vaccinated'='1 dosis'))+
-  scale_x_discrete(labels=c('people_fully_vaccinated'='2 dosis',
-                            'people_vaccinated'='1 dosis'))+
-  labs(x="Dosis por persona", y="Cantidad de dosis", fill="Dosis por persona")
-
-
-
-aindamais<-merge(x=completas_pais_hasta_mayo, y=completas_pais_hasta_junio, all=TRUE) %>% 
-  mutate(suma=people_vaccinated+people_fully_vaccinated, na.rm=TRUE)
-  select(people_vaccinated, people_fully_vaccinated)
+  labs(x="Dosis por persona", y="Cantidad de dosis",
+       fill="Dosis por persona")+
+  geom_text(aes(x=Numero_dosis, label =paste(Cant_dosis), vjust = -0.1, face = "bold"))

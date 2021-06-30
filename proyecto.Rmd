@@ -15,10 +15,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## **Introduccion**
 
-Debido al virus de la COVID-19, desde principios de 2020 nos encontramos en emergencia sanitaria, la cual ha dejado un elevado número de fallecidos a nivel mundial y cambiando completamente nuestras vidas.
-En Uruguay, el número de casos positivos y fallecidos ha venido en aumento de forma exponencial desde 2020. Asimismo, en enero 2021 comenzo el plan de vacunación, con el cual se espera dismunir los ingresos a CTI, la cantidad de fallecidos y eventualmente adquirir la inmunidad de rebaño.
+Debido al virus de la COVID-19, desde principios de 2020 nos encontramos en emergencia sanitaria, la cual ha dejado un elevado número de fallecidos a nivel mundial y ha cambiado completamente nuestras vidas.
+En Uruguay, el número de casos positivos y fallecidos ha venido en aumento de forma exponencial desde fines del 2020. Asimismo, en enero 2021 comenzó el plan de vacunación, con el cual se espera dismunir los ingresos a CTI, la cantidad de fallecidos y eventualmente adquirir la inmunidad de rebaño.
 
-En base  a esto, nos vimos interesados en seguir el plan de vacunación en Uruguay, estudiando por ejemplo como el mismo puede haber influido en los casos positivos, fallecidos, etc. El objetivo del presente trabajo será utilizar los distintos tipos de visualizaciones, resumenes y funciones aprendidas durante el curso para llevar a cabo el análisis; así como, desarrollar un aplicación Shiny que permita realizar la exploración de forma interactiva.
+En base  a esto, nos vimos interesados en seguir el plan de vacunación en Uruguay, estudiando, por ejemplo, cómo el mismo puede haber influído en los casos positivos, fallecidos, etc. El objetivo del presente trabajo será utilizar los distintos tipos de visualizaciones, resúmenes y funciones aprendidas durante el curso para llevar a cabo el análisis; así como, desarrollar una aplicación Shiny que permita realizar la exploración de forma interactiva.
 
 Para esto, utilizamos 2 conjuntos de datos. Con el cometido de guiar nuestra investigación fueron planteadas 5 preguntas principales. En lo que sigue, el documento se estructura de la manera siguiente:
 
@@ -36,12 +36,12 @@ Para esto, utilizamos 2 conjuntos de datos. Con el cometido de guiar nuestra inv
 
 ## **Datos**
 
-Como se adelantaba en la sección anterior, trabajamos con dos conjuntos de datos que a su vez están compuestos por varias bases, toda la información es vinculada a datos sobre COVID-19 en Uruguay, como lo son: muertes, casos diarios, vacunados, etc. El horiznte temporal que tendremos en cuenta será el comprendido entre el 1 de Marzo y 23 de Junio del año corriente.
+Como se adelantaba en la sección anterior, trabajamos con dos conjuntos de datos que a su vez están compuestos por varias bases, toda la información es vinculada a datos sobre COVID-19 en Uruguay, como lo son: muertes, casos diarios, vacunados, etc. El horizonte temporal que tendremos en cuenta será el comprendido entre el 1 de Marzo y 23 de Junio del año corriente.
 
 Las fuentes de donde extraímos la informacion fueron: [Proyecto Coronavirus](https://www.gub.uy/ministerio-salud-publica/coronavirus), los
-datos del [GUIAD(Grupo Uruguayo Interdisciplinario de Análisis de Datos)](https://guiad-covid.github.io/)y ademas un [repo](https://github.com/3dgiordano/covid-19-uy-vacc-data/blob/main/data/Uruguay.csv) de ((((alguien))))
+datos del [GUIAD(Grupo Uruguayo Interdisciplinario de Análisis de Datos)](https://guiad-covid.github.io/)y ademas un [repo](https://github.com/3dgiordano/covid-19-uy-vacc-data/blob/main/data/Uruguay.csv) de 3dgiordano.
 
-Antes de poder dar comienzo al analisis exploratorio, limpiamos y reestructuramos algunos datos. De forma que el anaalisis sea mas claro.
+Antes de poder dar comienzo al análisis exploratorio, limpiamos y reestructuramos algunos datos. De forma que el análisis sea mas claro.
 
 ```{r, echo=FALSE}
 library(tidyverse)
@@ -132,9 +132,9 @@ labs <-labs %>% pivot_wider(names_from = arranca,values_from = numeros)
 
 # **Análisis exploratorio**
 
-Tal y como planteamos en la introduccion, nuestro principal interes se encuentra en el plan de vacunacion, para ellos nos planteamos una serie de preguntas que van a ir guiando este proyecto.
+Tal y como planteamos en la introducción, nuestro principal interés se encuentra en el plan de vacunacién, para ello nos planteamos una serie de preguntas que van a ir guiando este proyecto.
 
-### Pregunta 1 - ¿Como ha evolucionado la cantidad de dosis suministradas diariamente, comparando por laboratorio?
+### Pregunta 1 - ¿Cómo ha evolucionado la cantidad de dosis suministradas diariamente, comparando por laboratorio?
 
 ```{r codigo pregunta1s1, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center', fig.cap="Linea temporal mostrando la evolucion de cantidad de dosis de vacunas suministradas por dia segun laboratorio"}
 labs %>% ggplot(aes(x = date, y = diario, colour = lab)) +geom_line() + 
@@ -154,7 +154,7 @@ labs %>% ggplot(aes(x = date, y = segDiario, colour = lab)) + geom_line() +
 ```
 \pagebreak
 
-#### ¿Cual es la proporcion por laboratorio del total de dosis suministradas hasta el 23/6
+#### ¿Cuál es la proporción por laboratorio del total de dosis suministradas hasta el 23/06?
 
 ```{r codigo pregunta1s3, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center', fig.cap="Grafico de barras que representa la proporcion de dosis suministradas por laboratorio"}
 tabg <- labs %>% group_by(lab) %>% summarise(max_acum  = max(acum)) 
@@ -168,7 +168,7 @@ tabg %>% mutate(porc_acum = round(max_acum / sum(max_acum,na.rm = TRUE),2),
   labs(y = "Porcentaje de dosis suministradas",x = "Laboratorio")
 ```
 
-#### ¿Cual es la proporcion por laboratorio del total de dosis suministradas hasta el 23/6
+#### ¿Cuál es la proporción por laboratorio del total de dosis suministradas hasta el 23/06?
 
 ``` {r codigo pregunta1s4, echo=FALSE, warning=FALSE,message=FALSE,fig.align='center', fig.cap="Grafico de barras que representa la proporcion de 2das dosis suministradas segun laboratorio"}
 
@@ -184,7 +184,7 @@ tabg2 %>% mutate(porc_acum = round(acum_seg / sum(acum_seg,na.rm = TRUE),4),
 
 \pagebreak
 
-### Pregunta 2 - ¿Como fue la evolucion de casos positivos dependiendo el departamento?
+### Pregunta 2 - ¿Cómo fue la evolución de casos positivos dependiendo del departamento?
 
 ```{r codigo pregunta2s1, echo=FALSE, warning=FALSE,message=FALSE,fig.align='center',fig.cap="Linea temporal mostrando la evolucion de casos positivos separado por departamento, y aplicando escala logaritmica"}
 
@@ -206,7 +206,7 @@ por_depto %>% ggplot(aes(x = fecha, y = cantCasosNuevosCALC, colour = departamen
   facet_wrap(~departamento) + scale_y_log10()
 ```
 
-#### ¿Y si vemos cuantas personas han fallecido por departamento?
+#### ¿Y si vemos cuántas personas han fallecido por departamento?
 
 ```{r codigo pregunta2s2, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Grafico de barras ordenado mostrando la cantidad de fallecimientos por COVID-19 segun cada departamento"}
 por_depto %>% group_by(departamento) %>% 
@@ -219,9 +219,9 @@ por_depto %>% group_by(departamento) %>%
 
 \pagebreak
 
-### Pregunta 3 - Hasta el 23 de junio, ¿todas las personas con primera dosis antes del 25 mayo recibieron la segunda dosis?. Si no es así, ¿Cuántas personas no se dieron la segunda dosis?
+### Pregunta 3 - Hasta el 23/06, ¿todas las personas con primera dosis antes del 26/05 recibieron la segunda dosis?. Si no es así, ¿Cuántas personas no se dieron la segunda dosis?
 
-```{r codigo pregunta3s1, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Linea temporal mostrando la evolucion de personas vacunadas con segunda dosis hasta el 25/5"}
+```{r codigo pregunta3s1, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Línea temporal mostrando la evolución de personas vacunadas con segunda dosis hasta el 25/5"}
 
 uruguay %>% select(date, vaccine, total_vaccinations, people_vaccinated,
   people_fully_vaccinated, daily_vaccinated) %>% filter(date <= "2021-05-26") %>% 
@@ -231,69 +231,63 @@ uruguay %>% select(date, vaccine, total_vaccinations, people_vaccinated,
   labs(x="Fecha", y="Cantidad de dosis en el día")
 ```
 
-```{r codigo pregunta3s2, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Grafico de barras separado por departamento mostrando la proporcion de personas vacunadas con primera dosis y segunda dosis en el periodo de Mayo a Junio"}
-
-completas_hasta_mayo <- vacunacion_uru %>% select(date, depar, total, people) %>%
-  filter(date == "2021-05-26") %>% group_by(depar) 
-
-completas_hasta_junio <-vacunacion_uru %>% select(date, depar, total, fully) %>% 
-  filter(date == "2021-06-23") %>% group_by(depar) 
-
-completas <- merge(x=completas_hasta_mayo, y=completas_hasta_junio, all=TRUE) %>% 
-  pivot_longer(cols = c("people","fully"), names_to = "Numero_dosis", 
-  values_to ="Cant_dosis") %>% group_by(depar, Numero_dosis) %>% 
-  summarise(Cant_dosis = sum(Cant_dosis, na.rm=TRUE)) 
-
-completas %>% ggplot(aes(x=Numero_dosis, y=Cant_dosis, fill=Numero_dosis))+
-  geom_col(width=1)+ theme(aspect.ratio = 1) + scale_fill_brewer(palette = "Dark2", 
-    labels=c('fully'='2 dosis','people'='1 dosis')) + 
-  scale_x_discrete(labels=c('fully'='2 dosis','people'='1 dosis'))+
-  labs(x="Dosis por persona", y="Cantidad de dosis", fill="Dosis por persona")+
-  facet_wrap(~depar)
-
-#Arreglar que quede en porcentajes y que se vea mas claro.
-
-```
-
-#### ¿Y a nivel pais?
-
-```{r codigo pregunta3s3, echo=FALSE, warning=FALSE,message=FALSE, fig.align='center',fig.cap="Grafico de barras separado por departamento mostrando la proporcion de personas vacunadas con primera dosis y segunda dosis en el periodo de Mayo a Junio"}
-
-#NO ME APARECE EL GRAFICO EN EL PDF
-completas_pais_hasta_mayo <- uruguay %>% 
+```{r codigo pregunta3s2, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la proporcion de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06."}
+completas_pais_hasta_mayo<- uruguay %>% 
   select(date, total_vaccinations, people_vaccinated) %>%
   filter(date == "2021-05-26") 
 
-completas_pais_hasta_junio <- uruguay %>% 
+completas_pais_hasta_junio<- uruguay %>% 
   select(date, total_vaccinations, people_fully_vaccinated) %>%
   filter(date == "2021-06-23") 
 
-completas_pais<-merge(x=completas_pais_hasta_mayo, 
-                      y=completas_pais_hasta_junio, all=TRUE) %>% 
+completas_pais<-merge(x=completas_pais_hasta_mayo, y=completas_pais_hasta_junio, all=TRUE) %>% 
   pivot_longer(cols = c("people_vaccinated","people_fully_vaccinated"),
-      names_to = "Numero_dosis", values_to ="Cant_dosis") %>% 
+               names_to = "Numero_dosis", 
+               values_to ="Cant_dosis") %>% 
   group_by(Numero_dosis) %>% 
   summarise(Cant_dosis = sum(Cant_dosis, na.rm=TRUE)) %>% 
-  ggplot(aes(x=Numero_dosis, y=Cant_dosis, fill=Numero_dosis)) +
-  geom_col()+ theme(aspect.ratio = 1/2)+
-  scale_fill_brewer(palette = "Dark2", 
-    labels=c('people_fully_vaccinated'='2 dosis',
-      'people_vaccinated'='1 dosis'))+
-  scale_x_discrete(labels=c('people_fully_vaccinated'='2 dosis',
-     'people_vaccinated'='1 dosis'))+
-  labs(x="Dosis por persona", y="Cantidad de dosis", fill="Dosis por persona")
+  group_by(Numero_dosis, Cant_dosis) %>% 
+  summarise(porcentaje=round(Cant_dosis/1688019*100, 2))
 
-#completas_pais
+completas_pais %>% 
+  ggplot(aes(x=Numero_dosis, y=porcentaje, fill=Numero_dosis))+
+  geom_col()+ theme(aspect.ratio = 2)+
+  scale_fill_brewer(palette = "Dark2", labels=c('people_fully_vaccinated'='2 dosis',
+                                                'people_vaccinated'='1 dosis'))+
+  scale_x_discrete(labels=c('people_fully_vaccinated'='2 dosis',
+                            'people_vaccinated'='1 dosis'))+
+  labs(title="El 13,6% de los vacunados con primera dosis no se dieron la segunda",
+       caption="De todas las personas que se vacunaron con una dosis hasta el 26/05/2021, 
+       un 13,6% de las personas no se dieron la segunda dosis a los 28 días.",
+       x="Dosis por persona", y="Cantidad de dosis",
+       fill="Dosis por persona")+
+  geom_text(aes(x=Numero_dosis, label =paste(porcentaje, '%'), vjust = -0.05))+
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 12), 
+        plot.caption=element_text(hjust = 0.5))
+
+
+```
+
+```{r codigo pregunta3s3, echo=FALSE, warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la cantidad de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06."}
+
+completas_pais %>% 
+  ggplot(aes(x=Numero_dosis, y=Cant_dosis, fill=Numero_dosis))+
+  geom_col()+ theme(aspect.ratio = 2)+
+  scale_fill_brewer(palette = "Dark2", labels=c('people_fully_vaccinated'='2 dosis',
+                                                'people_vaccinated'='1 dosis'))+
+  scale_x_discrete(labels=c('people_fully_vaccinated'='2 dosis',
+                            'people_vaccinated'='1 dosis'))+
+  labs(x="Dosis por persona", y="Cantidad de dosis",
+       fill="Dosis por persona")+
+  geom_text(aes(x=Numero_dosis, label =paste(Cant_dosis), vjust = -0.1, face = "bold"))
 
 #Personas con una dosis pero que no se dieron la segunda a nivel país:
 # 1688019-1458403=229616 personas.
-#Hacer el nivel pais con porcentajes.
-
 ```
 
 \pagebreak
 
-### Pregunta 4 - #¿Se podría decir que la cantidad de fallecidos diarios a disminuido ha medida que avanza el plan de vacunación?
+### Pregunta 4 - #¿Se podría decir que la cantidad de fallecidos diarios ha disminuido a medida que avanza el plan de vacunación?
 
 ```{r, echo = FALSE,warning=FALSE,message=FALSE}
 
