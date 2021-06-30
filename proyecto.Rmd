@@ -5,6 +5,7 @@ date: "29/6/2021"
 output:
   pdf_document: default
   html_document: default
+lang: "es"
 ---
 
 ```{r setup, include=FALSE}
@@ -18,16 +19,35 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Nuevas Teconologias para el analisis estadistico de datos
 \pagebreak
 
-## Introduccion
+## **Introduccion**
 
 Debido al virus de la Covid-19, desde principios de 2020 nos encontramos en emergencia sanitaria, la cual ha dejado un elevado numero de fallecidos a nivel mundial y cambiando completamente nuestras vidas.
 En Uruguay, el numero de casos positivos y fallecidos ha venido en aumento de forma exponencial desde 2020. Asi mismo, en enero 2021 comenzo el plan de vacunacion, con el cual se espera dismunir los ingresos a CTI, la cantidad de fallecidos y eventualmente adquirir la inmunidad de rebaño.
 
-En base  a esto, nos vimos interesados en seguir el plan de vacunacion en Uruguay, estudiando por ejemplo como el mismo ha influido en los casos positivos, fallecidos, etc.
+En base  a esto, nos vimos interesados en seguir el plan de vacunación en Uruguay, estudiando por ejemplo como el mismo puede haber influido en los casos positivos, fallecidos, etc. El objetivo del presente trabajo será utilizar los distintos tipos de visualizaciones, resumenes y funciones aprendidas durante el curso para llevar a cabo el análisis; así como, desarrollar un aplicación Shiny que permita realizar la exploración de forma interactiva.
 
-Para esto, utilizamos 2 conjuntos de datos. 
 
-#agregar datos, descripcion de los mismos, fuentes, etc.
+Para esto, utilizamos 2 conjuntos de datos. Con el cometido de guiar nuestra investigación fueron planteadas 5 preguntas principales. En lo que sigue, el documento se estructura de la manera siguiente:
+
++ Datos
++ Análisis exploratorio
+  * Pregunta 1
+  * Pregunta 2
+  * Pregunta 3
+  * Pregunta 4
+  * Pregunta 5
++ Aplicación shiny
++ Conclusiones
+
+## **Datos**
+
+Como se adelantaba en la sección anterior, trabajamos con dos conjuntos de datos que a su vez están compuestos por varias bases, toda la información es vinculada a datos sobre COVID-19 en Uruguay, como lo son: muertes, casos diarios, vacunados, etc. El horiznte temporal que tendremos en cuenta será el comprendido entre el 1 de Marzo y 23 de Junio del año corriente.
+
+Las fuentes de donde extraímos los datos son:
+[link1]()
+
+
+
 
 
 Antes de poder dar comienzo al analisis exploratorio, limpiamos y reestructuramos algunos datos. De forma que el anaalisis sea mas claro.
@@ -102,9 +122,10 @@ labs <-labs %>% pivot_wider(names_from = arranca,values_from = numeros)
 
 \pagebreak
 
-Tal y como planteamos en la introduccion, nuestro principal interes se encuentra en el plan de vacunacion, para ellos nos planteamos una serie de preguntas que van a ir guiando este proyecto.
 
-# *Preguntas*
+# *Análisis exploratorio*
+
+Tal y como planteamos en la introduccion, nuestro principal interes se encuentra en el plan de vacunacion, para ellos nos planteamos una serie de preguntas que van a ir guiando este proyecto.
 
 ## Pregunta 1
 
