@@ -277,7 +277,7 @@ completas_pais %>%
 
 \pagebreak
 
-### Pregunta 4 - #¿Se podría decir que la cantidad de fallecidos diarios ha disminuido a medida que avanza el plan de vacunación?
+### Pregunta 4 - ¿Se podría decir que la cantidad de fallecidos diarios ha disminuido a medida que avanza el plan de vacunación?
 
 ```{r codigo datos que van a ser utilizados en esta pregunta,echo = FALSE,warning=FALSE,message=FALSE}
 
@@ -300,23 +300,20 @@ ggplot(data=muertes_vacunados)+geom_line(aes(x=date, y=people_fully_vaccinated))
 
 La cantidad de personas vacunadas con ambas dosis crece de forma aparentemente exponencial. A partir de mediados de mayo hasta junio, se podría observar un pequeño estancamiento.
 
+\pagebreak
+
 ```{r código analisis fallecimientos diarios,echo = FALSE,warning=FALSE,message=FALSE, fig.cap='Gráfico temporal que muestra la evolución en la cantidad de fallecidos diarios.'}
 ggplot(data=muertes_vacunados,aes(x=date, y=muertes_totales_diarias))+geom_line() +
   labs(x='Fecha', y='Cantidad de fallecidos por día')+ 
    stat_peaks(span = NULL, color = "red") +
-  stat_peaks(span = NULL, geom = "text", vjust = 0.5,hjust=0.8, color = "red", 
+  stat_peaks(span = NULL, geom = "text", vjust = 0.6,hjust=0.8, color = "red", 
              aes(label = paste(stat(y.label), "fallecidos,\n el día", stat(x.label))))+
   scale_x_date(date_breaks = "10 days") + 
   theme(axis.text.x = element_text(size = 9, angle = 300, hjust = 0))
 
-  #stat_wb_mean funcion intresante para agregar mean de cierta parte de los datos, no puedo seleccionar un rango ya que mi variable no es numerica
-
-
-
-
 ```
 
-Se podría observar cierta tendencia exponencial hasta mediados de abril, el mayor pico se presenta el día 19/06/2021 con 91 muertes.
+Se podría observar cierta tendencia exponencial hasta mediados de abril, el mayor pico de fallecidos se presenta el día 19/06/2021 con 91 muertes.
 
 ```{r codigo gráfico pregunta 4 en si,echo = FALSE,warning=FALSE,message=FALSE, fig.cap='Gráfico que muestra la evolución de fallecidos, a medida que aumenta la cantidad de personas completamente vacunadas.' }
 
@@ -331,7 +328,9 @@ ggplot(data=muertes_vacunados,aes(x=people_fully_vaccinated, y=muertes_totales_d
                w.band =  c(1000000,1500000), vjust = -3, hjust=0.3,color='red')+
   scale_x_continuous(n.breaks =8)
 ```
-Hasta las 250.000 personas vacunadas con ambas dosis, podemos ver una tendencia a aumentar la cantidad de fallecidos diarios. En promedio, desde los 250.000 hasta el 1.000.000 de personas completamente vacunadas, 57,9 personas fallecieron diariamente. Si bien hay dos picos de fallecidos desde el millón de personas completamente vacunadas, en promedio, dicha cantidad ha disminuido, cayendo a 45.4 personas fallecidas diariamente.
+
+
+Hasta las 250.000 personas vacunadas con ambas dosis, podemos ver una tendencia a aumentar la cantidad de fallecidos diarios. En promedio, desde los 250.000 hasta el 1.000.000 de personas completamente vacunadas, 57,9 personas fallecieron diariamente. Si bien hay dos picos de fallecidos desde el millón de personas vacunadas con ambas dosis, en promedio, dicha cantidad ha disminuido, cayendo a 45.4 personas fallecidas diariamente.
 
 
 \pagebreak
