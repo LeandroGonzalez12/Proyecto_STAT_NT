@@ -10,7 +10,7 @@ urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## **Introduccion**
@@ -279,7 +279,7 @@ completas_pais %>%
 
 ### Pregunta 4 - #¿Se podría decir que la cantidad de fallecidos diarios ha disminuido a medida que avanza el plan de vacunación?
 
-```{r, echo = FALSE,warning=FALSE,message=FALSE}
+```{r codigo datos que van a ser utilizados en esta pregunta,echo = FALSE,warning=FALSE,message=FALSE}
 
 muertes_diarias <- muertes_edad %>% group_by(date) %>% 
   summarise(muertes_totales_diarias=sum(daily))
@@ -287,27 +287,47 @@ muertes_diarias <- muertes_edad %>% group_by(date) %>%
 personas_totalmente_vacunadas <- uruguay %>% select(date, people_fully_vaccinated)
 muertes_vacunados <- merge(muertes_diarias, personas_totalmente_vacunadas)
 
+```
+
+Primero veamos cómo se comportan las variables independientemente.
+
+```{r codigo anaisis personas completamente vacunadas, echo = FALSE,warning=FALSE,message=FALSE, fig.cap='Gráfico temporal que muestra la evolución de la cantidad de personas vacunadas con ambas dosis.'}
+
 ggplot(data=muertes_vacunados)+geom_line(aes(x=date, y=people_fully_vaccinated)) + 
   labs(x='Fecha', y='Personas vacunadas con ambas dosis')
 
-#Podemos ver que la cantidad de personas vacunadas con ambas dosis crece de forma aparentemente exponencial. De todas fomras, a partir de mediados de mayo hasta junio, se podria observar un pequeño estancamiento.
+```
 
-ggplot(data=muertes_vacunados)+geom_line(aes(x=date, y=muertes_totales_diarias)) + 
+La cantidad de personas vacunadas con ambas dosis crece de forma aparentemente exponencial. A partir de mediados de mayo hasta junio, se podría observar un pequeño estancamiento.
+
+```{r código analisis fallecimientos diarios,echo = FALSE,warning=FALSE,message=FALSE, fig.cap='Gráfico temporal que muestra la evolución en la cantidad de fallecidos diarios.'}
+ggplot(data=muertes_vacunados,aes(x=date, y=muertes_totales_diarias))+geom_line() +
   labs(x='fecha', y='Cantidad de fallecidos por día')+ 
-  stat_peaks(aes(x=date, y=muertes_totales_diarias), colour = "red") +
-  stat_peaks(aes(x=date, y=muertes_totales_diarias),
-      geom = "text", colour = "red",vjust = 5, angle=0)
+   stat_peaks(span = NULL, color = "red") +
+  stat_peaks(span = NULL, geom = "text", vjust = 0.5,hjust=0.8, color = "red", 
+             aes(label = paste(stat(y.label), "fallecidos,\n el día", stat(x.label))))
 
-muertes_vacunados %>% select(muertes_totales_diarias) %>% max()
+  #stat_wb_mean funcion intresante para agregar mean de cierta parte de los datos, no puedo seleccionar un rango ya que mi variable no es numerica
 
-#Por otro lado, la cantidad de fallecimientos diarios presenta mayor variación. Hasta abril, se podría osbervar cierta tendencia exponencial. hata junio, dicho númeor parece en promedio mantenerse, hasta el 13/06/2021 donde se registra un pico de muertes, por otro lado el mayor pico se presenta el día 19/06/2021 con 91 muertes.
+#library(ggspectra)
 
+
+```
+
+Se podría observar cierta tendencia exponencial hasta mediados de abril, el mayor pico se presenta el día 19/06/2021 con 91 muertes.
+
+```{r codigo gráfico pregunta 4 en si,echo = FALSE,warning=FALSE,message=FALSE, fig.cap='Gráfico que muestra la evolución de fallecidos, a medida que aumenta la cantidad de personas completamente vacunadas.' }
 ggplot(data=muertes_vacunados,aes(x=people_fully_vaccinated, y=muertes_totales_diarias))+geom_line()+ labs(x='Personas vacunadas con ambas dosis', y='Cantidad de fallecidos por día')
+
 
 #Hasta las 250.000 personas vacunadas con ambas dosis, podemos ver una tendencia a crecer la cantidad de fallecidos diarios, parece estabilizarse hasta que llegamos a las 1.000.000 personas, presentando los 2 picos antes mencionados. 
 #Pareciera presentar una baja tendencia a disminuir la cantidad de fallecimientos diarios, pero no se si se puede comprobar con estos datos
+#
+#si se puede incluir lo que agregue antes de la media, se podrían sacar mejores conclusiones creo
 
 ```
+
+
 
 \pagebreak
 
@@ -315,22 +335,22 @@ ggplot(data=muertes_vacunados,aes(x=people_fully_vaccinated, y=muertes_totales_d
 
 ```{r codigo pregunta5s1,echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Grafico de barras mostrando la proporcion de vacunados segun departamento"}
 
-departamentos %>% select(Region, Population, Vaccinated) %>% 
-  mutate(proporcion=Vaccinated/sum(Population)) %>% arrange(desc(proporcion)) %>% 
+departamentos<-departamentos %>% rename(Fully_Vaccinated='Fully Vaccinated')
+departamentos %>% select(Region, Population, Fully_Vaccinated)%>% mutate(proporcion=(Fully_Vaccinated)/Population) %>% arrange(desc(proporcion))%>% 
   ggplot(aes(reorder(Region, proporcion), proporcion, fill=Region)) + 
     geom_bar(stat='identity')+coord_flip() + 
-    labs(x='Departamentos', y='Porporción de vacunados segun población total', 
+    labs(x='Departamentos', y='Porporción de personas completamentamente vacunadas segun población', 
          fill='Departamentos') + 
     theme(legend.position = 'none')
 
-#### COMENTARIOS PARA HACER
-#Podemos ver que los 3 departamentos mas poblados, son también, 
-#los 3 departamentos con mayor proporción de vacunados
-#Ver de pasar a porcentajes, se entiende mejor creo yo. si se pone así, 
-#agregar porcentajes en cada barra para que quede mas claro
-
 ```
+Con dicho gráficos, podemos observar que no se cumple lo que planteamos en la pregunta. Se puede observar que los 3 departamentos con mayór proporción de personas vacunadas con ambas dosis son:
 
++ Durazno
+
++ Lavalleja
+
++ Flores
 
 \pagebreak
 
