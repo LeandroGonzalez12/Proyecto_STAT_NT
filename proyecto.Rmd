@@ -356,7 +356,7 @@ ggplot(data=muertes_vacunados,aes(x=people_fully_vaccinated, y=muertes_totales_d
                w.band =  c(250000,1000000),vjust = -3.5,  label.fmt  = "Mean = %.3g") +
   stat_wb_hbar(w.band = c(1000000,1500000), size = 1.2,color='red') +
   stat_wb_mean(label.fmt  = "Mean = %.3g",
-               w.band =  c(1000000,1500000), vjust = -3, hjust=0.3,color='red') +
+               w.band =  c(1000000,1500000), vjust = -3, hjust=0.4,color='red') +
   scale_x_continuous(n.breaks =8)
 ```
 
