@@ -139,6 +139,7 @@ labs %>% ggplot(aes(x = date, y = diario, colour = lab)) +geom_line() +
 ```
 
 ## Comentarios
+
 - Han sido 3 las vacunas que se suministraron en Uruguay hasta la fecha : Astrazeneca, Pfizer y Sinovac.
 - Se observa con claridad que en la mayoría de los días tomados en cuenta para realizar el gráfico, se suministró más cantidad de dosis con la vacuna del laboratorio de origen chino Sinovac, que con las otras 2. 
 - Además los días en que más dosis se suministró fueron entre los primeros 15 días del mes de abril, período que incluyó la semana de turismo, en este lapso temporal se vacunó a población de un gran rango etario que iba desde los 18 años en adelante.
@@ -146,6 +147,7 @@ labs %>% ggplot(aes(x = date, y = diario, colour = lab)) +geom_line() +
 - Respecto la vacuna desarrollada por el laboratorio Astrazeneca con la Universidad de Oxford,que en primera instancia pretendía suministrarse a las franjas etarias mayores, fue resistida por una gran cantidad de personas. Se observa que sólo a mediados de Abril fueron aplicadas cerca de 20000 dosis, en adelante las cifras fueron considerablemente menores, cuando en realidad existía mayor cantidad disponible.
 - Cabe resaltar que la vacuna de AstraZeneca llegó a Uruguay en un momento de dudas sobre sus efectos, al detectarse casos de trombosis tras su aplicación. Por su parte, el MSP y la comunidad científica internacional aseguran que los beneficios son mayores que los posibles riesgos.
 
+\pagebreak
 
 ### ¿Cuál es la proporción por laboratorio del total de dosis suministradas hasta el 23/06?
 
@@ -159,6 +161,7 @@ tabg %>% mutate(porc_acum = round(max_acum / sum(max_acum,na.rm = TRUE),2),
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   labs(y = "Porcentaje de dosis suministradas",x = "Laboratorio")
 ```
+
 ## Comentarios
 
 - A lo largo del plan de vacunación la proveniente del laboratorio "Sinovac" ha sido la adquirida en mayor cantidad por el Estado uruguayo. Además de haber sido provisto por el fondo COVAX; emparejado con esto, la que se brindó en mayor magnitud,alrededor del 75% de las dosis . 
@@ -185,16 +188,18 @@ por_depto <- por_depto %>% mutate(departamento = recode(departamento,
 
 por_depto %>% ggplot(aes(x = fecha, y = cantCasosNuevosCALC, colour = departamento)) + 
   geom_line(size = 0.05) + scale_x_date(date_breaks = "90 days") + 
-  theme(aspect.ratio = 1, axis.text.x = element_text(size = 7, angle = 300, hjust = 0)) +
+  theme(aspect.ratio = 1, axis.text.x = element_text(size = 7, angle = 300, hjust = 0),legend.position = 'none') +
   labs(x = "Fecha",y = "Cantidad de casos positivos",colour = "Departamento") + 
   facet_wrap(~departamento) + scale_y_log10()
 ```
+
 ## Comentarios
 
 - Como se puede ver en el gráfico, realizamos una linea temporal para cada departamento segun la cantidad de casos positivos que han habido, separado cada 90 días (utilizamos escala logarítmica para poder observar mejor las diferencias)
 - Se puede observar que practicamente en todo el territorio uruguao hubo un aumento exponencial de casos positivos. En los departamentos que más se puede apreciar es en Montevideo, Salto y Paysandú.
 - Aforotunadamente,desde Junio se puede observar un gran decrecimiento de casos positivos en todo el país, esto puede deberse al gran plan de vacunación que estamos teniendo (más de 4.000.000 de vacunadas proporcionadas).
 - A su vez, por lo que comentan las noticias, Rivera es el departamento que mejor está sobrellevando este último tiempo de la pandemia, y efectivamente viendo el gráfico, se puede concluir que es el que presenta el mayor decrecimiento de casos, encontrándose actualmente en color Amarillo en la escala de Harvard.
+\pagebreak
 
 #### ¿Y si vemos cuántas personas han fallecido por departamento?
 
@@ -203,8 +208,10 @@ por_depto %>% group_by(departamento) %>%
   summarise(cantidad_fallecidos = sum(cantFallecidos, na.rm = TRUE)) %>%
   ggplot(aes(y=reorder(departamento,-cantidad_fallecidos, na.rm=TRUE), 
           x = cantidad_fallecidos, fill = departamento)) + 
-  geom_col() + theme(aspect.ratio = 1) 
+  geom_col() + theme(aspect.ratio = 1,legend.position = 'none') +
+  labs(x = "Cantidad de fallecidos",y = "Departamentos")
 ```
+
 ## Comentarios
 
 - Se puede ver en el gráfico que los 2 departamentos que mayor población tienen en todo el país (Montevideo y Canelones) son los que tienen mayor cantidad de fallecidos.
@@ -223,9 +230,12 @@ uruguay %>% select(date, vaccine, total_vaccinations, people_vaccinated,
         axis.text.x = element_text(size = 7, hjust = 0)) +
   labs(x="Fecha", y="Cantidad de dosis en el día")
 ```
+
 ## Comentarios 
 
 -VER GRAFICO
+
+\pagebreak
 
 ```{r codigo pregunta3s2, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la proporcion de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06."}
 completas_pais_hasta_mayo<- uruguay %>% 
@@ -257,6 +267,7 @@ completas_pais %>%
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 12), 
         plot.caption=element_text(hjust = 0.5))
 ```
+
 ## Comentarios
 
 - El gráfico representa, como ya lo dice el titulo, un grafico de barras mostrando la proporcion de vacunados con primera dosis hasta el 26/5 y segunda dosis hasta 23/6.
@@ -279,6 +290,7 @@ completas_pais %>%
   geom_text(aes(x=Numero_dosis, label =paste(Cant_dosis), vjust = -0.1, face = "bold"))
 
 ```
+
 ## Comentarios
 
 - Se puede apreciar que 1688019-1458403=229616 personas aún no tienen la 2da dosis de la vacuna en el Uruguay.
@@ -306,7 +318,9 @@ ggplot(data=muertes_vacunados)+geom_line(aes(x=date, y=people_fully_vaccinated))
   labs(x='Fecha', y='Personas vacunadas con ambas dosis')
 
 ```
+
 ## Comentarios
+
 - La cantidad de personas vacunadas con ambas dosis crece de forma aparentemente exponencial. 
 - Desde mediados de mayo hasta junio, se podría observar un pequeño estancamiento.
 
@@ -321,9 +335,12 @@ ggplot(data=muertes_vacunados,aes(x=date, y=muertes_totales_diarias))+geom_line(
   scale_x_date(date_breaks = "15 days") + 
   theme(axis.text.x = element_text(size = 9, angle = 300, hjust = 0))
 ```
+
 ## Comentarios
 
 - Se podría observar cierta tendencia exponencial hasta mediados de abril, el mayor pico de fallecidos se presenta el día 19/06/2021 con 91 muertes.
+
+\pagebreak
 
 ```{r codigo gráfico pregunta 4 en si,echo = FALSE,warning=FALSE,message=FALSE, fig.cap='Gráfico que muestra la evolución de fallecidos, a medida que aumenta la cantidad de personas completamente vacunadas.' }
 
@@ -340,6 +357,7 @@ ggplot(data=muertes_vacunados,aes(x=people_fully_vaccinated, y=muertes_totales_d
                w.band =  c(1000000,1500000), vjust = -3, hjust=0.3,color='red') +
   scale_x_continuous(n.breaks =8)
 ```
+
 ## Comentarios
 
 - Hasta las 250.000 personas vacunadas con ambas dosis, podemos ver una tendencia a aumentar la cantidad de fallecidos diarios. 
