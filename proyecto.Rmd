@@ -315,7 +315,9 @@ muertes_vacunados <- merge(muertes_diarias, personas_totalmente_vacunadas)
 ```{r codigo anaisis personas completamente vacunadas, echo = FALSE,warning=FALSE,message=FALSE,fig.align='center',fig.cap='Gráfico temporal que muestra la evolución de la cantidad de personas vacunadas con ambas dosis.'}
 
 ggplot(data=muertes_vacunados)+geom_line(aes(x=date, y=people_fully_vaccinated)) + 
-  labs(x='Fecha', y='Personas vacunadas con ambas dosis')
+  labs(x='Fecha', y='Personas vacunadas con ambas dosis')+
+  scale_x_date(date_breaks = "15 days") +
+  theme(axis.text.x = element_text(size = 9, angle = 300, hjust = 0))
 
 ```
 
