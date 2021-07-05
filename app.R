@@ -1,7 +1,6 @@
 library(shiny)
 library(tidyverse)
 
-# Define UI for application that draws a histogram
 ui <- fluidPage(
     navlistPanel("Menu",
       tabPanel("Pregunta 1",
