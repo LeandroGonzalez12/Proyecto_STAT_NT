@@ -220,24 +220,7 @@ por_depto %>% group_by(departamento) %>%
 \pagebreak
 
 ### Pregunta 3 - Hasta el 23/06, ¿todas las personas con primera dosis antes del 26/05 recibieron la segunda dosis?. Si no es así, ¿Cuántas personas no se dieron la segunda dosis?
-
-```{r codigo pregunta3s1, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Línea temporal mostrando la evolución de personas vacunadas con segunda dosis hasta el 25/5"}
-
-uruguay %>% select(date, vaccine, total_vaccinations, people_vaccinated,
-  people_fully_vaccinated, daily_vaccinated) %>% filter(date <= "2021-05-26") %>% 
-  ggplot(aes(x = date, y = daily_vaccinated)) + geom_line() +
-  scale_colour_brewer(palette = "Dark2") + theme(aspect.ratio = 1/3,
-        axis.text.x = element_text(size = 7, hjust = 0)) +
-  labs(x="Fecha", y="Cantidad de dosis en el día")
-```
-
-## Comentarios 
-
--VER GRAFICO
-
-\pagebreak
-
-```{r codigo pregunta3s2, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la proporcion de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06."}
+```{r codigo pregunta3s1, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la proporcion de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06."}
 completas_pais_hasta_mayo<- uruguay %>% 
   select(date, total_vaccinations, people_vaccinated) %>%
   filter(date == "2021-05-26") 
@@ -276,7 +259,7 @@ completas_pais %>%
 
 \pagebreak
 
-```{r codigo pregunta3s3, echo=FALSE, warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la cantidad de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06 a nivel pais"}
+```{r codigo pregunta3s2, echo=FALSE, warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la cantidad de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06 a nivel pais"}
 
 completas_pais %>% 
   ggplot(aes(x=Numero_dosis, y=Cant_dosis, fill=Numero_dosis))+
@@ -294,7 +277,7 @@ completas_pais %>%
 ## Comentarios
 
 - Se puede apreciar que 1688019-1458403=229616 personas aún no tienen la 2da dosis de la vacuna en el Uruguay.
-- Otro dato importante, más de 200.000  personas fueron las que aún no decidieron vacunarse, esto puede deberse a diferentes motivos, por ejemplo, no creen en la efectividad de la vacuna, no suelen vacunarse en su vida, desconfían de la misma porque dicen que tiene información para rastrearnos, entre otras. Ésta última cantidad de personas sale de sumar ambos valores del grafico y restárselo a la población de Uruguay (más de 3.300.000 de personas)
+- Otro dato importante, más de 200.000  personas fueron las que aún no decidieron vacunarse, esto puede deberse a diferentes motivos, por ejemplo, no creen en la efectividad de la vacuna, no suelen vacunarse en su vida, desconfían de la misma porque dicen que tiene información para rastrearnos, pueden haber tenido covid en ese lapso de tiempo, entre otras. Ésta última cantidad de personas sale de sumar ambos valores del grafico y restárselo a la población de Uruguay (más de 3.300.000 de personas)
 
 \pagebreak
 
