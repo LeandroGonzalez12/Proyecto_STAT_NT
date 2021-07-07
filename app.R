@@ -1,6 +1,8 @@
 library(lubridate)
 library(shiny)
 library(tidyverse)
+library(ggspectra)
+
 uruguay <- read_csv("data/Uruguay.csv") #Cargamos datos de vacunacion.
 
 # 1 - Dado que los nombres de las variables se encuentran en ingles.
@@ -136,63 +138,118 @@ ui <- fluidPage(
                              align="center", plotOutput("grafico2"))
                  ),
       tabPanel("Pregunta 2",
-              selectInput("depto", "Elegir departamento",
-                           c("Artigas", "Canelones", "Cerro Largo", "Colonia",
+               h3("¿Cómo fue la evolución de casos positivos dependiendo del departamento?", align="center", 
+                  plotOutput("grafico3")),
+               selectInput(inputId =  "depto", label = "Elegir departamento",
+                           choices = c("Artigas", "Canelones", "Cerro Largo", "Colonia",
                              "Durazno", "Florida", "Flores", "Lavalleja",
                              "Maldonado", "Montevideo", "Paysandú", "Rio Negro",
                              "Rocha", "Rivera", "Salto", "San José", "Soriano",
-                             "Tacuarembó", "Treinta y Tres")),
-              sliderInput("fechitas",
-                           "Fecha:",
-                           min = as.Date("2020-04-29","%Y-%m-%d"),
-                           max = as.Date("2021-06-25","%Y-%m-%d"),
-                           value=as.Date("2021-06-25"),
-                           timeFormat="%Y-%m-%d"),
-               h3("¿Cómo fue la evolución de casos positivos dependiendo del departamento?", align="center", 
-                  plotOutput("grafico3")),
-               h4("¿Y si vemos cuántas personas han fallecido por departamento?", align="center", plotOutput("scat4"))
+                             "Tacuarembó", "Treinta y Tres"),
+                           selected = "Montevideo"),
+               dateInput(inputId = "fechita1", label = "Fecha inicial",
+                        value = "2020-04-29",min = "2020-04-29",
+                        max = "2021-06-25"
+               ),
+               dateInput(inputId = "fechita2", label = "Fecha final",
+                        value = "2021-06-25",min = "2020-04-29",
+                        max = "2021-06-25"
+               ),
+               h4("¿Y si vemos cuántas personas han fallecido por departamento?", 
+                  align="center", plotOutput("scat4"))
       ),
       tabPanel("Pregunta 3",
-               h3("¿Todas las personas con primera dosis antes del 26/05 recibieron la segunda dosis?", align="center", plotOutput("scat")),
-               h4("¿Cuántas personas no se dieron la segunda dosis?", align="center", plotOutput("scat5"))
+               h3("¿Todas las personas con primera dosis antes del 26/05 recibieron la segunda dosis?",
+                  align="center", plotOutput("scat")),
+               h4("¿Cuántas personas no se dieron la segunda dosis?",
+                  align="center", plotOutput("scat5"))
       ),
       tabPanel("Pregunta 4",
-               dateRangeInput("dates",
-                              "Select Dates",
-                              start = min(muertes_vacunados$date), 
-                              end = max(muertes_vacunados$date)),
-               h3("This is the third panel", plotOutput("scat6"))
+               h3("¿Se podría decir que la cantidad de fallecidos diarios ha disminuido a medida que avanza el plan de vacunación?", 
+                  plotOutput("scat6")),
+               sliderInput("vacunitas",
+                           "Personas con dos dosis:",
+                           min = 0,
+                           max = 1451040,
+                           value = 1451040)
       ),
       tabPanel("Pregunta 5",
                h3("¿Se podría decir que en los departamentos más poblados, como Montevideo y Canelones el porcentaje de vacunados es mayor?",
                    align="center")
       )
-    )
+  )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-    gra3<-reactive(
-      por_depto %>% ggplot(aes(x = input$fechitas, y = cantCasosNuevosCALC,
-                               colour = input$depto)) + 
+  grafico1 <- reactive({
+    labs %>% filter(date %in% seq.Date(from = input$fecha1,
+                                       to = input$fecha2,
+                                       by = "day") &
+                      lab %in% input$labs) %>%  
+      ggplot(aes(x = date, y = diario, colour = lab)) +geom_line() + 
+      scale_colour_brewer(palette = "Dark2") +scale_x_date(date_breaks = "10 days") + 
+      theme(aspect.ratio = 1, axis.text.x = element_text(size = 7, angle = 300, hjust = 0)) +
+      labs(x = "Fecha",y = "Cantidad de dosis en el dia",colour = "Laboratorio")
+  })
+  output$grafico1 <- renderPlot(grafico1())
+  grafico2 <- reactive({
+    labs %>% filter(lab %in% input$labs & date %in% seq.Date(from = input$fecha1,
+                                                             to = input$fecha2,
+                                                             by = "day")) %>% 
+      group_by(lab) %>% summarise(max_acum  = max(acum)) %>% 
+      mutate(uno = as.factor(rep(1)), max_acum = max_acum/1000) %>%
+      ggplot(aes(y = max_acum, fill = uno, x = lab)) + 
+      geom_bar(stat = "identity") + scale_fill_manual(values = "cadetblue") +
+      theme(legend.position = "none") + 
+      labs(y = "Cantidad de dosis suministradas (en miles de dosis)",
+           x = "Laboratorio")
+  })
+  output$grafico2 <- renderPlot(grafico2())
+  
+  grafico3<-reactive(
+      por_depto %>% filter(fecha %in% seq.Date(from = input$fechita1,
+                                                  to = input$fechita2,
+                                                  by = "day") &
+                                 departamento %in% input$depto) %>%
+        ggplot(aes(x =fecha, y = cantCasosNuevosCALC,
+                               colour = departamento)) + 
         geom_line(size = 0.05) + scale_x_date(date_breaks = "90 days") + 
         theme(aspect.ratio = 1, axis.text.x = element_text(size = 7, angle = 300, hjust = 0),legend.position = 'none') +
         labs(x = "Fecha",y = "Cantidad de casos positivos",colour = "Departamento") + 
         facet_wrap(~ input$depto) + scale_y_log10()
     )
-    output$grafico3<-renderPlot({ gra3() })
+    output$grafico3<-renderPlot({ grafico3() })
+  scat4<-reactive(por_depto %>%
+                    filter(people_fully %in% seq.Date(from = input$fechita1,
+                                                to = input$fechita2,
+                                                by = "day") &
+                              departamento %in% input$depto) %>%
+                              group_by(departamento) %>% 
+                              summarise(cantidad_fallecidos = sum(cantFallecidos, na.rm = TRUE)) %>%
+                              ggplot(aes(y=reorder(departamento,-cantidad_fallecidos, na.rm=TRUE), 
+                              x = cantidad_fallecidos, fill = departamento)) + 
+                              scale_fill_manual(values = "cadetblue") +
+                              geom_col() + theme(aspect.ratio = 1,legend.position = 'none') +
+                              labs(x = "Cantidad de fallecidos",y = "Departamentos")
+  )
+  output$scat4<-renderPlot({scat4()})
     
-    gra6<-reactive(
-      ggplot(data=muertes_vacunados,aes(x=.data[[input$dates]], y=muertes_totales_diarias))+
-        geom_line() +
-        labs(x='Fecha', y='Cantidad de fallecidos por día')+ 
-        stat_peaks(span = NULL, color = "red") +
-        stat_peaks(span = NULL, geom = "text", vjust = 0.6,hjust=0.8, color = "red", 
-                   aes(label = paste(stat(y.label), "fallecidos,\n el día", stat(x.label))))+
-        scale_x_date(date_breaks = "15 days") + 
-        theme(axis.text.x = element_text(size = 9, angle = 300, hjust = 0))
+    scat6<-reactive(
+      muertes_vacunados %>% 
+        filter(people_fully_vaccinated %in% input$vacunitas) %>% 
+        ggplot(data=muertes_vacunados,aes(x=people_fully_vaccinated, y=muertes_totales_diarias)) +
+        geom_line()+ labs(x='Personas vacunadas con ambas dosis', 
+                          y='Cantidad de fallecidos por día') +
+        stat_wb_hbar(w.band = c(250000,1000000), size = 1.2,color='red') +
+        stat_wb_mean(color='red',
+                     w.band =  c(250000,1000000),vjust = -3.5,  label.fmt  = "Mean = %.3g") +
+        stat_wb_hbar(w.band = c(1000000,1500000), size = 1.2,color='red') +
+        stat_wb_mean(label.fmt  = "Mean = %.3g",
+                     w.band =  c(1000000,1500000), vjust = -3, hjust=0.4,color='red') +
+        scale_x_continuous(n.breaks =8)
     )
-    output$scat6<-renderPlot({ gra6() })
+    output$scat6<-renderPlot({ scat6() })
     
     output$distPlot <- renderPlot({
         # generate bins based on input$bins from ui.R
@@ -202,30 +259,6 @@ server <- function(input, output) {
         # draw the histogram with the specified number of bins
         hist(x, breaks = bins, col = 'darkgray', border = 'white')
     })
-    grafico1 <- reactive({
-      labs %>% filter(date %in% seq.Date(from = input$fecha1,
-                                         to = input$fecha2,
-                                         by = "day") &
-                        lab %in% input$labs) %>%  
-        ggplot(aes(x = date, y = diario, colour = lab)) +geom_line() + 
-        scale_colour_brewer(palette = "Dark2") +scale_x_date(date_breaks = "10 days") + 
-        theme(aspect.ratio = 1, axis.text.x = element_text(size = 7, angle = 300, hjust = 0)) +
-        labs(x = "Fecha",y = "Cantidad de dosis en el dia",colour = "Laboratorio")
-    })
-    output$grafico1 <- renderPlot(grafico1())
-    grafico2 <- reactive({
-      labs %>% filter(lab %in% input$labs & date %in% seq.Date(from = input$fecha1,
-                                                               to = input$fecha2,
-                                                               by = "day")) %>% 
-        group_by(lab) %>% summarise(max_acum  = max(acum)) %>% 
-        mutate(uno = as.factor(rep(1)), max_acum = max_acum/1000) %>%
-        ggplot(aes(y = max_acum, fill = uno, x = lab)) + 
-        geom_bar(stat = "identity") + scale_fill_manual(values = "cadetblue") +
-        theme(legend.position = "none") + 
-        labs(y = "Cantidad de dosis suministradas (en miles de dosis)",
-             x = "Laboratorio")
-    })
-    output$grafico2 <- renderPlot(grafico2())
 }
 
 # Run the application 
