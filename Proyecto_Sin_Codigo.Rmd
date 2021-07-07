@@ -114,9 +114,9 @@ labs <-labs %>% pivot_wider(names_from = arranca,values_from = numeros)
 
 ### Plan de vacunación.
 
-Tal y como planteamos en la introducción, nuestro principal interés se encuentra en el plan de vacunacién, queremos saber como ha evolucionado en el correr del tiempo (recordar que el plan de vacunación comenzó el 1ero de Marzo de 2021), si las mismas fuero efectivas, los diferentes tipos de laboratorios proveedores de vacunas y demás.
+Tal y como planteamos en la introducción, nuestro principal interés se encuentra en el plan de vacunacién, queremos saber como ha evolucionado en el correr del tiempo (recordar que el plan de vacunación comenzó el 1ero de Marzo de 2021), si las mismas fueron efectivas, los diferentes tipos de laboratorios proveedores de vacunas y demás.
 
-Para comenzar este análisis, nos preguntamos como ha ido avanzando dicho plan y cuanto cantidad de vacunas han sido sumisnitradas por cada laboratorio.
+Para comenzar este análisis, nos preguntamos como ha ido avanzando dicho plan y cuanta cantidad de vacunas han sido suministradas por cada laboratorio.
 
 ```{r, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center', fig.cap="Linea temporal mostrando la evolucion de cantidad de dosis de vacunas suministradas por dia segun laboratorio"}
 
@@ -132,12 +132,12 @@ En el gráfico se puede observar que en el Uruguay, solamente 3 laboratorios (ha
 
 Se observa con claridad que en la mayoría de los días tomados en cuenta para realizar el gráfico, se suministró más cantidad de dosis con la vacuna del laboratorio de origen chino Sinovac, comparando con los otros 2 laboratorios. 
 
-Observando detalladamente el gráfico, se puede apreciar que los días en que más dosis se suministró fueron entre los primeros 15 días del mes de abril, período que incluyó la semana de turismo, en este lapso temporal se vacunó a población de un gran rango etario que iba desde los 18 años en adelante. Por otra parte, la vacuna elaborada por empresa farmacéutica de orígen estadounidense, Pfizer, tuvo su pico en torno al 10 de Abril, hecho que se explica por el comienzo del plan vacunatorio para gran parte de los trabajadores de la Salud ;con excepción de los que trabajan en areas de mayor urgencia, como por ejemplo: block quirurgico, servicios de apoyo CTI, y demás, que fueron vacunados en Marzo con Sinovac.
+Observando detalladamente el gráfico, se puede apreciar que los días en que más dosis se suministraron fueron entre los primeros 15 días del mes de Abril, período que incluyó la semana de turismo. En este lapso temporal se vacunó a población de un gran rango etario que iba desde los 18 años en adelante. Por otra parte, la vacuna elaborada por empresa farmacéutica de orígen estadounidense, Pfizer, tuvo su pico en torno al 10 de Abril, hecho que se explica por el comienzo del plan vacunatorio para gran parte de los trabajadores de la Salud ;con excepción de los que trabajan en áreas de mayor urgencia, como por ejemplo: block quirúrgico, servicios de apoyo CTI, y demás, que fueron vacunados en Marzo con Sinovac.
 
-Respecto la vacuna desarrollada por el laboratorio Astrazeneca con la Universidad de Oxford,que en primera instancia pretendía suministrarse a las franjas etarias mayores, a las personas no les pareció muy buena idea. Solamente a mediados de Abril fueron aplicadas cerca de 20000 dosis, en adelante las cifras fueron considerablemente menores, cuando en realidad existía mayor cantidad disponible. Esto puede deberse porque la vacuna de éste laboratorio llegó a Uruguay en un momento de dudas sobre sus efectos, al detectarse casos de trombosis tras su aplicación. Por su parte, el MSP y la comunidad científica internacional aseguran que los beneficios son mayores que los posibles riesgos.
+Respecto a la vacuna desarrollada por el laboratorio Astrazeneca con la Universidad de Oxford, que en primera instancia pretendía suministrarse a las franjas etarias mayores, a las personas no les pareció muy buena idea. Solamente a mediados de Abril fueron aplicadas cerca de 20000 dosis. Luego, las cifras fueron considerablemente menores, cuando en realidad existía mayor cantidad disponible. Esto puede deberse porque la vacuna de éste laboratorio llegó a Uruguay en un momento de dudas sobre sus efectos, al detectarse casos de trombosis tras su aplicación. Por su parte, el MSP (Ministerio de Salud Pública) y la comunidad científica internacional aseguran que los beneficios son mayores que los posibles riesgos.
 
 
-Por otra parte, y siguiendo la misma línea de análisis de la pregunta anterior, nos preguntamos por dicha cantidad, o sea, cuál fue la proporción de personas vacunadas por dicho laboratorio hasta el último día de registro de los datos (23/6). Los resultados son los siguientes:
+Siguiendo la misma línea de análisis de la pregunta anterior, nos preguntamos por dicha cantidad, o sea, cuál fue la proporción de personas vacunadas por dicho laboratorio hasta el último día de registro de los datos (23/6). Los resultados son los siguientes:
 
 ```{r, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center', fig.cap="Grafico de barras que representa la proporcion de dosis suministradas por laboratorio"}
 
@@ -155,16 +155,16 @@ tabg %>% mutate(porc_acum = round(max_acum / sum(max_acum,na.rm = TRUE),2),
 
 \pagebreak
 
-Se observa que a lo largo del plan de vacunación la proveniente del laboratorio "Sinovac" ha sido la adquirida en mayor cantidad por el Estado uruguayo. Además de haber sido provisto por el fondo COVAX; emparejado con esto, la que se brindó en mayor magnitud,alrededor del 75% de las dosis.
+Se observa que a lo largo del plan vacunatorio, la proveniente del laboratorio "Sinovac" ha sido adquirida en mayor cantidad por el Estado uruguayo. Además de haber sido provisto por el fondo COVAX; emparejado con esto, es la que se brindó en mayor magnitud, alrededor del 75% de las dosis.
 
 También, se vacunó con ella a diversas poblaciones, empezando con los que desempeñaban alguna ocupación de riesgo y gran necesidad (bomberos, policias, personal de la educación), pasando por personas de distintas ocupaciones y edades.
 
-Asimismo, en segundo lugar, la del laboratorio Pfizer se ha aplicado a poblaciones mas específicas como personal de salud y edades en las cuales aún no se habían realizado estudios con la china. Aproximadamente entre el 22% y 25% de las dosis suministradas por el Pfizer.
+Asimismo, en segundo lugar, la del laboratorio Pfizer se ha aplicado a poblaciones mas específicas como personal de salud y edades en las cuales aún no se habían realizado estudios con la china (Sinovac). Aproximadamente entre el 22% y 25% de las dosis suministradas fueron por Pfizer.
 
 Por último, como se comentaba anteriormente, la vacuna Astrazeneca, además de haberse adquirido en menor proporción, también fue la más resistida. Tan solo cerca del 1% de las dosis que se suministraron en el territorio uruguayo provienen de este laboratorio.
 
 
-### Primera y segunda dosis.
+### Primera y segunda dosis
 
 En los medios de comunicación comentaron que gran cantidad de personas se ha dado la primera dosis de la vacuna pero no la segunda dosis, esto puede deberse por diferentes motivos (han tenido COVID y no podían vacunarse, desconfiaron luego de la primer dosis, etc). Por lo que nos pareció interesante investigar cuál fue la proporción de personas que se dieron la primer dosis hasta el 26/5 pero no la segunda.
 
@@ -203,9 +203,9 @@ completas_pais %>%
 ```
 
 
-Se puede observar que toda de la población (que se agendó para vacunarse, no a nivel país) se encuentra vacunada, mientras que más del 85% de la población se dió la 2da dosis.
+Se puede observar que toda la población (que se agendó para vacunarse, no a nivel país) se encuentra vacunada, mientras que más del 85% de la población se dió la 2da dosis.
 
-Uno dato importante que se puede ver es que de todas las personas que se vacunaron con una dosis hasta el 26/05/2021, solamente un 13,6% no se dieron la segunda dosis a los 28 días.
+Un dato importante que se puede ver en dicho gráfico es que de todas las personas que se vacunaron con una dosis hasta el 26/05/2021, solamente un 13,6% no se dieron la segunda dosis a los 28 días.
 
 
 
@@ -226,13 +226,15 @@ completas_pais %>%
 
 ```
 
-Se puede apreciar que 1688019-1458403=229616 personas aún no tienen la 2da dosis de la vacuna en el Uruguay. Otro dato importante, más de 200.000  personas fueron las que aún no decidieron vacunarse, ya sea porque, no creen en la efectividad de la vacuna, no suelen vacunarse en su vida, pueden haber tenido covid en ese lapso de tiempo y no han podido inocularse, entre otras. Ésta última cantidad de personas sale de sumar ambos valores del grafico y restárselo a la población de Uruguay (más de 3.300.000 de personas)
+Se puede apreciar que 1688019 - 1458403 = 229616 personas aún no tienen la 2da dosis de la vacuna en el Uruguay. Cabe destacar que más de 200.000  personas fueron las que aún no decidieron vacunarse, ya que (como mencionamos anteriormente), no creen en la efectividad de la vacuna, no suelen vacunarse, pueden haber tenido covid en ese lapso de tiempo y no han podido inocularse, entre otras. 
+
+Ésta última cantidad de personas proviene de sumar ambos valores del grafico y restárselo a la población de Uruguay (más de 3.300.000 de personas)
 
 \pagebreak
 
-Por otra parte, sabemos que Montevideo y Canelones son los departamentos con mayor población de Uruguay, por lo que sería 'evidente' decir que son los departamentos con mayor cantidad de vacunados. De todos modos, la vacunación en el territorio viene siendo relativamente pareja en todos los departamentos, con alguna excepción.
+Por otra parte, sabemos que Montevideo y Canelones son los departamentos con mayor población de Uruguay, por lo que sería 'evidente' decir que son los lugares con mayor cantidad de vacunados. De todos modos, la vacunación en el territorio viene siendo relativamente pareja en todos los departamentos, con alguna excepción.
 
-Por ende, decimos analizar en el siguiente diagrama de barras, si realmente la relación vacuna/población es relativamente proporcional en dichos departamentos
+Por ende, decimos analizar en el siguiente diagrama de barras, si realmente la relación vacuna/población es relativamente proporcional en éstos departamentos (Montevideo y Canelones).
 
 ```{r,echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Grafico de barras mostrando la proporcion de vacunados segun departamento"}
 
@@ -251,15 +253,15 @@ departamentos %>% select(Region, Population, Fully_Vaccinated) %>%
 
 Se puede apreciar que no se cumple lo que planteamos anteriormente. Los 3 departamentos con mayor proporción de personas vacunadas con ambas dosis son: Durazno, Lavalleja y Flores.
 
-A su vez, Canelones, es el departamento con menor porcentaje de vacunados, debido a diferentes causas de organización al comienzo de dicho plan (por lo que se mecionó en las noticias).
+Canelones, es el departamento con menor porcentaje de vacunados, debido a diferentes causas de organización al comienzo de dicho plan (por lo que se mecionó en las noticias).
 
-Con respecto a Montevideo, se puede notar que, la relación vacuna/población viene a buen ritmo, encontrándose en un índice medio comparado con los demás departamentos. Montevideo tiene una población aproximada de 1.400.000 por lo que, a pesar de que nuestro sistema de salud es muy eficiente, es más dificil coordinar y ejecutar el plan vacunatorio. 
+Con respecto a Montevideo, se puede notar que, la relación vacuna/población viene a buen ritmo, encontrándose en un índice medio comparado con los demás departamentos. Montevideo tiene una población aproximada de 1.400.000 de personas, por lo que a pesar de que nuestro sistema de salud es muy eficiente, es más dificil coordinar y ejecutar el plan vacunatorio. 
 
 También, cabe destacar que en este último tiempo, se están vacunando a los adolescentes entre 12 y 17 años que generalmente son el factor de contagio más probable, por lo que empezará a aumentar la proporción en todo el país, hasta lograr (lo que se dice) una inmunidad de rebaño (70% de la población vacunada)
 
 \pagebreak
 
-### Evolución de la pandemia.
+### Evolución de la pandemia
 
 
 Sabemos que en el año 2020, el COVID-19 ha afectado de manera muy diferente a todos los departamentos, habiendo algunos casi sin casos o muy pocos, y centralizándose la mayor cantidad en la capital y alrededores (Montevideo y Canelones) y además en algunos departamentos del norte del país (Salto, Rivera).
@@ -295,15 +297,15 @@ por_depto %>% ggplot(aes(x = fecha, y = cantCasosNuevosCALC)) +
 
 \pagebreak
 
-Se puede apreciar que practicamente en todo el territorio uruguayo hubo un aumento exponencial de casos positivos. En los departamentos que más se puede apreciar es en Montevideo, Salto y Paysandú.
+Practicamente en todo el territorio uruguayo hubo un aumento exponencial de casos positivos. En los departamentos que más se puede ver es en Montevideo, Salto y Paysandú.
 
-Afortunadamente, desde Junio se puede observar un gran decrecimiento de casos positivos en todo el territorio, esto puede deberse al gran plan de vacunación que estamos teniendo (más de 4.000.000 de vacunadas proporcionadas).
+Afortunadamente, desde Junio se puede notar un gran decrecimiento de casos positivos en todo el territorio, esto puede deberse al gran plan de vacunación que estamos teniendo (más de 4.000.000 de vacunadas proporcionadas).
 
-A su vez, por lo que comentan las noticias, Rivera es el departamento que mejor está sobrellevando este último tiempo de la pandemia, y efectivamente viendo el gráfico, se puede concluir que es el que presenta el mayor decrecimiento de casos, encontrándose actualmente en color Amarillo en la escala de Harvard.
+A su vez, por lo que comentan las noticias, Rivera es el departamento que mejor está sobrellevando este último tiempo de la pandemia, y efectivamente viendo el gráfico, se puede concluir que es el que presenta el mayor decrecimiento de casos, encontrándose actualmente en color Amarillo en la escala de Harvard (único departamento en esa escala en todo el país)
 
 ### Fallecimientos
 
-Desafortunadamente, y como era de esperarse, el virus ha dejado una gran cantidad de fallecimientos en nuestra población, hecho que lamentamos mucho a nivel territorial y mundial. En el siguiente gráfico se aprecia la cantidad de facimientos por departamentos.
+Desafortunadamente, y como era de esperarse, el virus ha dejado una gran cantidad de fallecidos en nuestra población, hecho que lamentamos mucho a nivel territorial y mundial. En el siguiente gráfico se aprecia la cantidad de fallecimientos por departamentos.
 
 
 ```{r, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Grafico de barras ordenado mostrando la cantidad de fallecimientos por COVID-19 segun departamento"}
@@ -320,7 +322,7 @@ por_depto %>% group_by(departamento) %>%
 Se puede ver en el gráfico que los 2 departamentos que mayor población tienen en todo el país (Montevideo y Canelones) son los que tienen mayor cantidad de fallecidos.
 
 
-Por otra parte, Flores, que es el que departamento que menor población tiene (un poco más de 24000 personas) es el departamento que tiene menor cantidad de fallecidos.
+Por otra parte, Flores, que es el que departamento que menor población tiene (un poco más de 24000 personas) es el departamento que tiene menor cantidad, ya que como mencionamos anteriormente, es el lugar que tiene menor población del Uruguay por lo que la cantidad de fallecimientos y contagios condice con su población.
 
 \pagebreak
 
