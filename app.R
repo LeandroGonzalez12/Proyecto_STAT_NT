@@ -2,6 +2,14 @@ library(lubridate)
 library(shiny)
 library(tidyverse)
 library(ggspectra)
+library(maps)
+library(dplyr)
+library(maptools)
+library(rgdal)
+library(here)
+require(viridis)
+library(sf)
+library(plotly)
 
 uruguay <- read_csv("data/Uruguay.csv") #Cargamos datos de vacunacion.
 
@@ -111,8 +119,27 @@ muertes_diarias <- muertes_edad %>% group_by(date) %>%
 
 personas_totalmente_vacunadas <- uruguay %>% select(date, people_fully_vaccinated)
 muertes_vacunados <- merge(muertes_diarias, personas_totalmente_vacunadas)
+#datos necesarios para el mapita
 
-departamentos<-departamentos %>% rename(Fully_Vaccinated='Fully Vaccinated')
+sp_depto <- readOGR(here("data"
+                         ,
+                         "ine_depto.shp"))
+dframe_depto <- ggplot2::fortify(sp_depto) #conviere a data.frame
+
+dframe_depto<-dframe_depto %>%
+  filter(id!=15)%>% 
+  rename( Departamento = id)%>% 
+  mutate(Departamento= recode(Departamento, '0'='Montevideo', '1'='Artigas','2'='Canelones','3'='Colonia','4'='Durazno', '5'='Florida','6'='Lavalleja','7'='Paysandú','8'='Río Negro',
+                              '9'='Rivera','10'='Rocha','11'='Salto','12'='San José',
+                              '13'='Soriano','14'='Treinta y Tres','16'='Tacuarembó','17'='Flores',
+                              '18'='Maldonado','19'='Cerro Largo'))
+
+departamentos <- read_csv("data/Regions.csv")
+departamentos<-departamentos %>% rename(Fully_Vaccinated='Fully Vaccinated',Departamento=Region)
+
+
+datos_mapa <- left_join(dframe_depto , departamentos, by = "Departamento")
+
 
 
 ui <- fluidPage(
@@ -176,7 +203,8 @@ ui <- fluidPage(
                tabPanel("Pregunta 5",
                         h3("¿Se podría decir que en los departamentos más poblados, como Montevideo y Canelones el porcentaje de vacunados es mayor?",
                            align="center")
-               )
+               ),
+               tabPanel('Mapa', h2('Vacunacion en Uruguay'), plotlyOutput('mapa1'))
   )
 )
 
@@ -258,6 +286,17 @@ server <- function(input, output) {
     
     # draw the histogram with the specified number of bins
     hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  })
+  output$mapa1<-renderPlotly({
+    mapita<-(ggplot(data=datos_mapa,aes(x=long, y= lat, group=group, fill=Departamento,
+                                        text = paste('Personas vacunadas:',Vaccinated,'\n','Personas vacunadas con ambas dosis:', Fully_Vaccinated)))+
+               geom_polygon()+
+               scale_fill_viridis_d()+theme_minimal()+
+               coord_equal()+
+               theme( legend.position='none',
+                      axis.text = element_blank(),axis.ticks = element_blank(), axis.title = element_blank()))
+    mapita<-ggplotly(mapita)
+    mapita
   })
 }
 
