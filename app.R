@@ -198,7 +198,7 @@ ui <- fluidPage(
                                     "Personas con dos dosis:",
                                     min = 0,
                                     max = 1451040,
-                                    value = 1451040)
+                                    value = c(0,1451040))
                ),
                tabPanel("Pregunta 5",
                         h3("¿Se podría decir que en los departamentos más poblados, como Montevideo y Canelones el porcentaje de vacunados es mayor?",
@@ -265,16 +265,13 @@ server <- function(input, output) {
   
   scat6<-reactive(
     muertes_vacunados %>% 
-      filter(people_fully_vaccinated %in% input$vacunitas) %>% 
-      ggplot(data=muertes_vacunados,aes(x=people_fully_vaccinated, y=muertes_totales_diarias)) +
+      filter(between(people_fully_vaccinated, input$vacunitas[1], input$vacunitas[2])) %>% 
+      ggplot(aes(x=people_fully_vaccinated, y=muertes_totales_diarias)) +
       geom_line()+ labs(x='Personas vacunadas con ambas dosis', 
                         y='Cantidad de fallecidos por día') +
-      stat_wb_hbar(w.band = c(250000,1000000), size = 1.2,color='red') +
+      stat_wb_hbar(w.band = c(input$vacunitas[1],input$vacunitas[2]), size = 1.2,color='red') +
       stat_wb_mean(color='red',
-                   w.band =  c(250000,1000000),vjust = -3.5,  label.fmt  = "Mean = %.3g") +
-      stat_wb_hbar(w.band = c(1000000,1500000), size = 1.2,color='red') +
-      stat_wb_mean(label.fmt  = "Mean = %.3g",
-                   w.band =  c(1000000,1500000), vjust = -3, hjust=0.4,color='red') +
+                   w.band =  c(input$vacunitas[1],input$vacunitas[2]),vjust = 7,  label.fmt  = "Promedio de muertes diarias = %.3g") +
       scale_x_continuous(n.breaks =8)
   )
   output$scat6<-renderPlot({ scat6() })
