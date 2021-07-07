@@ -10,8 +10,11 @@ library(here)
 require(viridis)
 library(sf)
 library(plotly)
+library(shinyalert)
+library(shinydashboard)
 
-uruguay <- read_csv("data/Uruguay.csv") #Cargamos datos de vacunacion.
+
+uruguay <- read_csv(here("data","Uruguay.csv")) #Cargamos datos de vacunacion.
 
 # 1 - Dado que los nombres de las variables se encuentran en ingles.
 # Se renombran para facilitar la interpretacion.
@@ -139,77 +142,111 @@ departamentos<-departamentos %>% rename(Fully_Vaccinated='Fully Vaccinated',Depa
 
 
 datos_mapa <- left_join(dframe_depto , departamentos, by = "Departamento")
+lab.data <- datos_mapa %>%
+  group_by(depa=Departamento) %>%
+  summarise(long = mean(long), lat = mean(lat))
 
-
-
-ui <- fluidPage(
-  navlistPanel("Menu",
-               tabPanel("Pregunta 1",
-                        h3("¿Cómo ha evolucionado la cantidad de dosis suministradas diariamente, comparando por laboratorio?", align="center", 
-                           plotOutput("grafico1"),
-                           dateInput(inputId = "fecha1", label = "Fecha inicial",
-                                     value = "2021-02-27",min = "2021-02-27",
-                                     max = "2021-06-23"
-                           ),
-                           dateInput(inputId = "fecha2", label = "Fecha final",
-                                     value = "2021-06-23",min = "2021-02-27",
-                                     max = "2021-06-23"
-                           ),
-                           checkboxGroupInput(inputId = "labs",
-                                              label   = "Laboratorio",
-                                              choices = c("astrazeneca","pfizer",
-                                                          "coronavac"),
-                                              selected = "coronavac")
-                        ),
-                        h4("¿Cuál es el total de dosis suministradas por laboratorio en el rango seleccionado?",
-                           align="center", plotOutput("grafico2"))
-               ),
-               tabPanel("Pregunta 2",
-                        h3("¿Cómo fue la evolución de casos positivos dependiendo del departamento?", align="center", 
-                           plotOutput("grafico3")),
-                        selectInput(inputId =  "depto", label = "Elegir departamento",
-                                    choices = c("Artigas", "Canelones", "Cerro Largo", "Colonia",
-                                                "Durazno", "Florida", "Flores", "Lavalleja",
-                                                "Maldonado", "Montevideo", "Paysandú", "Rio Negro",
-                                                "Rocha", "Rivera", "Salto", "San José", "Soriano",
-                                                "Tacuarembó", "Treinta y Tres"),
-                                    selected = "Montevideo"),
-                        dateInput(inputId = "fechita1", label = "Fecha inicial",
-                                  value = "2020-04-29",min = "2020-04-29",
-                                  max = "2021-06-25"
-                        ),
-                        dateInput(inputId = "fechita2", label = "Fecha final",
-                                  value = "2021-06-25",min = "2020-04-29",
-                                  max = "2021-06-25"
-                        ),
-                        h4("¿Y si vemos cuántas personas han fallecido por departamento?", 
-                           align="center", plotOutput("scat4"))
-               ),
-               tabPanel("Pregunta 3",
-                        h3("¿Todas las personas con primera dosis antes del 26/05 recibieron la segunda dosis?",
-                           align="center", plotOutput("scat")),
-                        h4("¿Cuántas personas no se dieron la segunda dosis?",
-                           align="center", plotOutput("scat5"))
-               ),
-               tabPanel("Pregunta 4",
-                        h3("¿Se podría decir que la cantidad de fallecidos diarios ha disminuido a medida que avanza el plan de vacunación?", 
-                           plotOutput("scat6")),
-                        sliderInput("vacunitas",
-                                    "Personas con dos dosis:",
-                                    min = 0,
-                                    max = 1451040,
-                                    value = c(0,1451040))
-               ),
-               tabPanel("Pregunta 5",
-                        h3("¿Se podría decir que en los departamentos más poblados, como Montevideo y Canelones el porcentaje de vacunados es mayor?",
-                           align="center")
-               ),
-               tabPanel('Mapa', h2('Vacunacion en Uruguay'), plotlyOutput('mapa1'))
-  )
+ui<-dashboardPage(skin = "green",
+                  dashboardHeader(titleWidth  = 200, title = "Menu"),
+                  dashboardSidebar( width = 200,
+                                    sidebarMenu(
+                                      menuItem("Vacunacion", tabName = "mapa"),
+                                      menuItem("Pregunta 1", tabName = "p1", icon = icon("bar-chart-o")),
+                                      menuItem("Pregunta 2", tabName = "p2", icon = icon("bar-chart-o")),
+                                      menuItem("Pregunta 3", tabName = "p3", icon = icon("bar-chart-o")),
+                                      menuItem("Pregunta 4", tabName = "p4", icon = icon("bar-chart-o")),
+                                      menuItem("Pregunta 5", tabName = "p5", icon = icon("bar-chart-o"))
+                                    )
+                  ),
+                  dashboardBody(
+                    tags$head( 
+                      tags$style(HTML(".main-sidebar { font-size: 17px; }"))
+                    ),
+                    tabItems(
+                      
+                      tabItem(tabName = "mapa",h2('Vacunacion en Uruguay', align='center'), plotlyOutput('mapa1', width = "100%"),height='500px'),
+                      
+                      tabItem(tabName = "p1",h3("¿Cómo ha evolucionado la cantidad de dosis suministradas diariamente, comparando por laboratorio?", align="center", 
+                                                plotOutput("grafico1"),
+                                                dateInput(inputId = "fecha1", label = "Fecha inicial",
+                                                          value = "2021-02-27",min = "2021-02-27",
+                                                          max = "2021-06-23"
+                                                ),
+                                                dateInput(inputId = "fecha2", label = "Fecha final",
+                                                          value = "2021-06-23",min = "2021-02-27",
+                                                          max = "2021-06-23"
+                                                ),
+                                                checkboxGroupInput(inputId = "labs",
+                                                                   label   = "Laboratorio",
+                                                                   choices = c("astrazeneca","pfizer",
+                                                                               "coronavac"),
+                                                                   selected = "coronavac")
+                      ),
+                      h4("¿Cuál es el total de dosis suministradas por laboratorio en el rango seleccionado?",
+                         align="center", plotOutput("grafico1_1"))
+                      ),
+                      
+                      tabItem(tabName = "p2",h3("¿Cómo fue la evolución de casos positivos dependiendo del departamento?", align="center", 
+                                                plotOutput("grafico2")),
+                              selectInput(inputId =  "depto", label = "Elegir departamento",
+                                          choices = c("Artigas", "Canelones", "Cerro Largo", "Colonia",
+                                                      "Durazno", "Florida", "Flores", "Lavalleja",
+                                                      "Maldonado", "Montevideo", "Paysandú", "Rio Negro",
+                                                      "Rocha", "Rivera", "Salto", "San José", "Soriano",
+                                                      "Tacuarembó", "Treinta y Tres"),
+                                          selected = "Montevideo"),
+                              dateInput(inputId = "fechita1", label = "Fecha inicial",
+                                        value = "2020-04-29",min = "2020-04-29",
+                                        max = "2021-06-25"
+                              ),
+                              dateInput(inputId = "fechita2", label = "Fecha final",
+                                        value = "2021-06-25",min = "2020-04-29",
+                                        max = "2021-06-25"
+                              ),
+                              h4("¿Y si vemos cuántas personas han fallecido por departamento?", 
+                                 align="center", plotOutput("grafico2_2"))),
+                      
+                      
+                      tabItem(tabName = "p3",h3("¿Todas las personas con primera dosis antes del 26/05 recibieron la segunda dosis?",
+                                                align="center", plotOutput("grafico3")),
+                              h4("¿Cuántas personas no se dieron la segunda dosis?",
+                                 align="center", plotOutput("grafico3_3"))),
+                      
+                      
+                      tabItem(tabName = "p4",h3("¿Se podría decir que la cantidad de fallecidos diarios ha disminuido a medida que avanza el plan de vacunación?", 
+                                                plotOutput("grafico4")),
+                              sliderInput("vacunitas",
+                                          "Personas con dos dosis:",
+                                          min = 0,
+                                          max = 1451040,
+                                          value = c(0,1451040))),
+                      
+                      tabItem(tabName = "p5",
+                              h3("¿Se podría decir que en los departamentos más poblados, como Montevideo y Canelones el porcentaje de vacunados es mayor?",
+                                 align="center"))
+                    )
+                  )
 )
 
-# Define server logic required to draw a histogram
-server <- function(input, output) {
+server<-function(input,output){
+  
+  mapa<-reactive({})
+  output$mapa1<-renderPlotly({
+    mapita<-(ggplot(data=datos_mapa,aes(x=long, y= lat))+
+               geom_polygon(aes(group=group, fill=Departamento,
+                                text = paste('Personas vacunadas:',Vaccinated,'\n',
+                                             'Personas vacunadas con ambas dosis:', Fully_Vaccinated)))+
+               scale_fill_viridis_d()+theme_minimal()+
+               geom_text(data = lab.data,aes(label = depa),
+                         size = 3, hjust = 0.5, color='black',fontface = "bold")+ 
+               coord_equal()+
+               theme( legend.position='none',
+                      axis.text = element_blank(),axis.ticks = element_blank(), axis.title = element_blank(), panel.grid = element_blank()))
+    mapita<-ggplotly(mapita)
+    mapita
+  })
+  
+  
   grafico1 <- reactive({
     labs %>% filter(date %in% seq.Date(from = input$fecha1,
                                        to = input$fecha2,
@@ -217,53 +254,55 @@ server <- function(input, output) {
                       lab %in% input$labs) %>%  
       ggplot(aes(x = date, y = diario, colour = lab)) +geom_line() + 
       scale_colour_brewer(palette = "Dark2") +scale_x_date(date_breaks = "10 days") + 
-      theme(aspect.ratio = 1, axis.text.x = element_text(size = 7, angle = 300, hjust = 0)) +
+      theme(axis.text.x = element_text(size = 7, angle = 300, hjust = 0)) +
       labs(x = "Fecha",y = "Cantidad de dosis en el dia",colour = "Laboratorio")
   })
+  
+  
   output$grafico1 <- renderPlot(grafico1())
-  grafico2 <- reactive({
+  grafico1_1 <- reactive({
     labs %>% filter(lab %in% input$labs & date %in% seq.Date(from = input$fecha1,
                                                              to = input$fecha2,
                                                              by = "day")) %>% 
       group_by(lab) %>% summarise(max_acum  = max(acum)) %>% 
       mutate(uno = as.factor(rep(1)), max_acum = max_acum/1000) %>%
-      ggplot(aes(y = max_acum, fill = uno, x = lab)) + 
-      geom_bar(stat = "identity") + scale_fill_manual(values = "cadetblue") +
-      theme(legend.position = "none") + 
+      ggplot(aes(y = max_acum , x = lab)) + 
+      geom_bar(stat = "identity")+
       labs(y = "Cantidad de dosis suministradas (en miles de dosis)",
            x = "Laboratorio")
   })
-  output$grafico2 <- renderPlot(grafico2())
+  output$grafico1_1 <- renderPlot(grafico1_1())
   
-  grafico3<-reactive(
+  grafico2<-reactive(
     por_depto %>% filter(fecha %in% seq.Date(from = input$fechita1,
                                              to = input$fechita2,
                                              by = "day") &
                            departamento %in% input$depto) %>%
-      ggplot(aes(x =fecha, y = cantCasosNuevosCALC,
-                 colour = departamento)) + 
+      ggplot(aes(x =fecha, y = cantCasosNuevosCALC)) + 
       geom_line(size = 0.05) + scale_x_date(date_breaks = "90 days") + 
-      theme(aspect.ratio = 1, axis.text.x = element_text(size = 7, angle = 300, hjust = 0),legend.position = 'none') +
+      theme(axis.text.x = element_text(size = 8,hjust = 0)) +
       labs(x = "Fecha",y = "Cantidad de casos positivos",colour = "Departamento") + 
-      facet_wrap(~ input$depto) + scale_y_log10()
+      facet_wrap(~ input$depto)
   )
-  output$grafico3<-renderPlot({ grafico3() })
-  scat4<-reactive(por_depto %>%
-                    filter(people_fully %in% seq.Date(from = input$fechita1,
-                                                      to = input$fechita2,
-                                                      by = "day") &
-                             departamento %in% input$depto) %>%
-                    group_by(departamento) %>% 
-                    summarise(cantidad_fallecidos = sum(cantFallecidos, na.rm = TRUE)) %>%
-                    ggplot(aes(y=reorder(departamento,-cantidad_fallecidos, na.rm=TRUE), 
-                               x = cantidad_fallecidos, fill = departamento)) + 
-                    scale_fill_manual(values = "cadetblue") +
-                    geom_col() + theme(aspect.ratio = 1,legend.position = 'none') +
-                    labs(x = "Cantidad de fallecidos",y = "Departamentos")
-  )
-  output$scat4<-renderPlot({scat4()})
+  output$grafico2<-renderPlot({ grafico2() })
   
-  scat6<-reactive(
+  
+  grafico2_2<-reactive(por_depto %>%
+                         filter(people_fully %in% seq.Date(from = input$fechita1,
+                                                           to = input$fechita2,
+                                                           by = "day") &
+                                  departamento %in% input$depto) %>%
+                         group_by(departamento) %>% 
+                         summarise(cantidad_fallecidos = sum(cantFallecidos, na.rm = TRUE)) %>%
+                         ggplot(aes(y=reorder(departamento,-cantidad_fallecidos, na.rm=TRUE), 
+                                    x = cantidad_fallecidos)) +
+                         geom_col() +
+                         labs(x = "Cantidad de fallecidos",y = "Departamentos")
+  )
+  
+  output$grafico2_2<-renderPlot({grafico2_2()})
+  
+  grafico4<-reactive(
     muertes_vacunados %>% 
       filter(between(people_fully_vaccinated, input$vacunitas[1], input$vacunitas[2])) %>% 
       ggplot(aes(x=people_fully_vaccinated, y=muertes_totales_diarias)) +
@@ -274,7 +313,7 @@ server <- function(input, output) {
                    w.band =  c(input$vacunitas[1],input$vacunitas[2]),vjust = 7,  label.fmt  = "Promedio de muertes diarias = %.3g") +
       scale_x_continuous(n.breaks =8)
   )
-  output$scat6<-renderPlot({ scat6() })
+  output$grafico4<-renderPlot({ grafico4() })
   
   output$distPlot <- renderPlot({
     # generate bins based on input$bins from ui.R
@@ -284,19 +323,14 @@ server <- function(input, output) {
     # draw the histogram with the specified number of bins
     hist(x, breaks = bins, col = 'darkgray', border = 'white')
   })
-  output$mapa1<-renderPlotly({
-    mapita<-(ggplot(data=datos_mapa,aes(x=long, y= lat, group=group, fill=Departamento,
-                                        text = paste('Personas vacunadas:',Vaccinated,'\n','Personas vacunadas con ambas dosis:', Fully_Vaccinated)))+
-               geom_polygon()+
-               scale_fill_viridis_d()+theme_minimal()+
-               coord_equal()+
-               theme( legend.position='none',
-                      axis.text = element_blank(),axis.ticks = element_blank(), axis.title = element_blank()))
-    mapita<-ggplotly(mapita)
-    mapita
+  
+  
+  
+  observeEvent("", {
+    showModal(modalDialog(
+      includeHTML("intro_text.html")
+    ))
   })
 }
-
-# Run the application 
-shinyApp(ui = ui, server = server)
+shinyApp(ui, server)
 
