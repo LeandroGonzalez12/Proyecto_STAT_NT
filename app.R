@@ -102,21 +102,18 @@ por_depto <- por_depto %>% mutate(departamento = recode(departamento,
 
 completas_pais_hasta_mayo<- uruguay %>% 
   select(date, total_vaccinations, people_vaccinated) %>%
-  filter(date == "2021-05-26") 
+  filter(date >= "2021-02-27" & date <="2021-05-26")
 
 completas_pais_hasta_junio<- uruguay %>% 
   select(date, total_vaccinations, people_fully_vaccinated) %>%
-  filter(date == "2021-06-23") 
-
-completas_pais<-merge(x=completas_pais_hasta_mayo, y=completas_pais_hasta_junio, all=TRUE) %>% 
-  pivot_longer(cols = c("people_vaccinated","people_fully_vaccinated"),
-               names_to = "Numero_dosis", 
-               values_to ="Cant_dosis") %>% 
-  group_by(Numero_dosis) %>% 
-  summarise(Cant_dosis = sum(Cant_dosis, na.rm=TRUE)) %>% 
-  group_by(Numero_dosis, Cant_dosis) %>% 
-  summarise(porcentaje=round(Cant_dosis/1688019*100, 2))
-
+  filter(date >= "2021-02-27" & date <="2021-06-23")
+completitas<-
+  merge(x=completas_pais_hasta_mayo, y=completas_pais_hasta_junio, all=TRUE) %>% 
+  rename(fecha = date,
+         vacunaciones_totales = total_vaccinations,
+         primera = people_vaccinated,
+         segunda = people_fully_vaccinated) %>%  
+  pivot_longer(cols = c("primera","segunda"),names_to = "dosis",values_to = "cantidad")
 muertes_diarias <- muertes_edad %>% group_by(date) %>% 
   summarise(muertes_totales_diarias=sum(daily))
 
@@ -145,7 +142,7 @@ lab.data <- datos_mapa %>%
   summarise(long = mean(long), lat = mean(lat))
 
 ui <- dashboardPage(skin = "green",
-        dashboardHeader(titleWidth  = 200, title = "Menu"),
+        dashboardHeader(titleWidth  = 200, title = "Menú"),
         dashboardSidebar( width = 250,
           sidebarMenu(
             menuItem("Vacunación", tabName = "mapa"),
@@ -159,7 +156,7 @@ ui <- dashboardPage(skin = "green",
           tags$head(tags$style(HTML(".main-sidebar { font-size: 17px; }"))),
             tabItems(
               tabItem(tabName = "mapa",
-                h2('Vacunacion en Uruguay', align='center'), plotlyOutput('mapa1', width = "100%"),height='500px'),
+                h2('Vacunación en Uruguay', align='center'), plotlyOutput('mapa1', width = "100%"),height='500px'),
               tabItem(tabName = "p1",
                 h4("¿Cómo ha evolucionado la cantidad de dosis suministradas diariamente, comparando por laboratorio?", align="center",
                          plotOutput("grafico1"), 
@@ -173,9 +170,14 @@ ui <- dashboardPage(skin = "green",
                 h4("¿Cuál es el total de dosis suministradas por laboratorio en el rango seleccionado?",align="center", plotOutput("grafico1_1")),
               ),
               tabItem(tabName = "p2",
-                h4("¿Todas las personas con primera dosis antes del 26/05 recibieron la segunda dosis?",
-                   align="center", plotOutput("grafico3")),
-                h4("¿Cuántas personas no se dieron la segunda dosis en el país?",align="center", plotOutput("grafico3_3"))
+                      h4("¿Todas las personas con primera dosis antes del 26/05 recibieron la segunda dosis?",
+                         align="center", plotOutput("grafico3")),
+                      dateInput(inputId = "fechaza1", label = "Fecha inicial",value = "2021-02-27",min = "2021-02-27",
+                                max = "2021-05-26"),
+                      dateInput(inputId = "fechaza2", label = "Fecha final",value = "2021-06-23",min = "2021-02-27",
+                                max = "2021-06-23"),
+                      checkboxGroupInput(inputId = "dosis",
+                                         label = "Número de dosis",choices = c("primera","segunda"),selected = "segunda")
               ),
               tabItem(tabName = "p2",
                 h3("¿Se podría decir que en los departamentos más poblados, como Montevideo y Canelones el porcentaje de vacunados es mayor?",
@@ -244,6 +246,15 @@ server<-function(input,output){
       labs(x = "Cantidad de fallecidos",y = "Departamentos")
   )
   output$grafico2_2<-renderPlot({grafico2_2()})
+  
+  grafico3 <- reactive(
+    completitas %>% filter(fecha %in% seq.Date(from = input$fechaza1,to = input$fechaza2,by = "10 days") & dosis %in% input$dosis) %>%
+      ggplot(aes(x = fecha, y = cantidad, colour = dosis)) + geom_line() + 
+      scale_colour_brewer(palette = "Dark2") + scale_x_date(date_breaks = "10 days") + 
+      theme(axis.text.x = element_text(size = 7, angle = 90, hjust = 0))+
+      labs(x="Fecha", y="Cantidad de vacunas", colour = "Dosis")
+  )
+  output$grafico3 <- renderPlot({ grafico3() })
   
   grafico4 <- reactive(
     muertes_vacunados %>% filter(between(people_fully_vaccinated, input$vacunitas[1], input$vacunitas[2])) %>% 
