@@ -30,11 +30,12 @@ Antes de poder dar comienzo al análisis exploratorio, limpiamos y reestructuram
 ```{r, echo=FALSE,message=FALSE}
 library(tidyverse)
 library(ggpmisc)
+library(here)
 ```
 
 ```{r,echo=FALSE, warning=FALSE,message=FALSE}
 
-uruguay <- read_csv("data/Uruguay.csv") #Cargamos datos de vacunacion.
+uruguay <- read_csv(here("data",'Uruguay.csv')) #Cargamos datos de vacunacion.
 
 # 1 - Dado que los nombres de las variables se encuentran en ingles.
 # Se renombran para facilitar la interpretacion.
@@ -71,7 +72,7 @@ total_lab <- select(uruguay,date,diario_coronavac,acum_coronavac,primDiario_coro
 
 # 4 - El conjunto de datos Deaths muestra los datos de fallecimiento segun edad, 
 #pero no por departamento, actualizado hasta el dia 22/6
-muertes_edad <- read_csv("data/Deaths.csv")
+muertes_edad <- read_csv(here("data",'Deaths.csv'))
 
 # 5 - De dichos datos, se eligen las primeras 17 columnas, 
 #ya que las otras son tramos distintos de edad.
@@ -89,11 +90,11 @@ muertes_edad <-muertes_edad %>% mutate(tramo = recode(tramo, '_0_17'  = '[0,17]'
    mutate(tramo_etario = as.factor(tramo)) %>% select(-tramo)
 
 # 6 - Se cargan datos de vacunacion por departamento
-departamentos <- read_csv("data/Regions.csv")
+departamentos <- read_csv(here("data","Regions.csv"))
 
 # 7 - Se cargan los datos del GUIAD
-por_depto <- read_csv("data/estadisticasUY_porDepto_detalle.csv")
-nacional  <- read_csv("data/estadisticasUY.csv")
+por_depto <- read_csv(here("data","estadisticasUY_porDepto_detalle.csv"))
+nacional  <- read_csv(here("data","estadisticasUY.csv"))
 
 # 8 - Separamos en 2 bases de datos
 
@@ -146,9 +147,8 @@ Siguiendo la misma línea de análisis de la pregunta anterior, nos preguntamos 
 tabg <- labs %>% group_by(lab) %>% summarise(max_acum  = max(acum)) 
 
 tabg %>% mutate(porc_acum = round(max_acum / sum(max_acum,na.rm = TRUE),2),
-  uno = as.factor(rep(1,3))) %>% ggplot(aes(y = porc_acum, fill = uno, x = lab)) + 
-  geom_bar(stat = "identity") + scale_fill_manual(values = "cadetblue") +
-  theme(legend.position = "none") + 
+  uno = as.factor(rep(1,3))) %>% ggplot(aes(y = porc_acum, x = lab)) + 
+  geom_bar(stat = "identity")  + 
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   labs(y = "Porcentaje de dosis suministradas",x = "Laboratorio")
 ```
@@ -190,13 +190,13 @@ completas_pais<-merge(x=completas_pais_hasta_mayo, y=completas_pais_hasta_junio,
   summarise(porcentaje=round(Cant_dosis/1688019*100, 2))
 
 completas_pais %>% 
-  ggplot(aes(x=Numero_dosis, y=porcentaje, fill=Numero_dosis))+
+  ggplot(aes(x=Numero_dosis, y=porcentaje))+
   geom_col()+ theme(aspect.ratio = 2)+
-  scale_fill_brewer(palette = "Dark2", labels=c('people_fully_vaccinated'='2 dosis',
+  scale_fill_brewer(labels=c('people_fully_vaccinated'='2 dosis',
                                                 'people_vaccinated'='1 dosis'))+
   scale_x_discrete(labels=c('people_fully_vaccinated'='2 dosis',
                             'people_vaccinated'='1 dosis'))+
-  labs(x="Dosis por persona", y="Cantidad de dosis",fill="Dosis por persona")+
+  labs(x="Dosis por persona", y="Cantidad de dosis")+
   geom_text(aes(x=Numero_dosis, label =paste(porcentaje, '%'), vjust = -0.05))+
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 12), 
         plot.caption=element_text(hjust = 0.5))
@@ -214,14 +214,13 @@ Un dato importante que se puede ver en dicho gráfico es que de todas las person
 ```{r, echo=FALSE, warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la cantidad de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06 a nivel pais"}
 
 completas_pais %>% 
-  ggplot(aes(x=Numero_dosis, y=Cant_dosis, fill=Numero_dosis))+
+  ggplot(aes(x=Numero_dosis, y=Cant_dosis))+
   geom_col()+ theme(aspect.ratio = 2)+
-  scale_fill_brewer(palette = "Dark2", labels=c('people_fully_vaccinated'='2 dosis',
+  scale_fill_brewer( labels=c('people_fully_vaccinated'='2 dosis',
                                                 'people_vaccinated'='1 dosis'))+
   scale_x_discrete(labels=c('people_fully_vaccinated'='2 dosis',
                             'people_vaccinated'='1 dosis'))+
-  labs(x="Dosis por persona", y="Cantidad de dosis",
-       fill="Dosis por persona")+
+  labs(x="Dosis por persona", y="Cantidad de dosis")+
   geom_text(aes(x=Numero_dosis, label =paste(Cant_dosis), vjust = -0.1, face = "bold"))
 
 ```
@@ -243,11 +242,9 @@ Por ende, decimos analizar en el siguiente diagrama de barras, si realmente la r
 departamentos<-departamentos %>% rename(Fully_Vaccinated='Fully Vaccinated')
 departamentos %>% select(Region, Population, Fully_Vaccinated) %>% 
   mutate(proporcion=(Fully_Vaccinated)/Population) %>% arrange(desc(proporcion)) %>% 
-  ggplot(aes(reorder(Region, proporcion), proporcion, fill=Region)) + 
+  ggplot(aes(reorder(Region, proporcion), proporcion)) + 
   geom_bar(stat='identity')+coord_flip() + 
-  labs(x='Departamentos', y='Proporción de personas vacunadas con ambas dosis', 
-         fill='Departamentos') + 
-  theme(legend.position = 'none')
+  labs(x='Departamentos', y='Proporción de personas vacunadas con ambas dosis') 
 
 ```
 
@@ -314,8 +311,8 @@ Desafortunadamente, y como era de esperarse, el virus ha dejado una gran cantida
 por_depto %>% group_by(departamento) %>% 
   summarise(cantidad_fallecidos = sum(cantFallecidos, na.rm = TRUE)) %>%
   ggplot(aes(y=reorder(departamento,-cantidad_fallecidos, na.rm=TRUE), 
-          x = cantidad_fallecidos, fill = departamento)) + 
-  geom_col() + theme(aspect.ratio = 1,legend.position = 'none') +
+          x = cantidad_fallecidos)) + 
+  geom_col() + theme(aspect.ratio = 1) +
   labs(x = "Cantidad de fallecidos",y = "Departamentos")
 ```
 
