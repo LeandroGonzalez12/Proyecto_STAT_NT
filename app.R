@@ -138,6 +138,7 @@ departamentos <- read_csv("data/Regions.csv")
 departamentos<-departamentos %>% rename(Fully_Vaccinated='Fully Vaccinated',Departamento=Region)
 
 
+
 datos_mapa <- left_join(dframe_depto , departamentos, by = "Departamento")
 lab.data <- datos_mapa %>%
   group_by(depa=Departamento) %>%
@@ -145,7 +146,7 @@ lab.data <- datos_mapa %>%
 
 ui <- dashboardPage(skin = "green",
         dashboardHeader(titleWidth  = 200, title = "Menu"),
-        dashboardSidebar( width = 200,
+        dashboardSidebar( width = 250,
           sidebarMenu(
             menuItem("Vacunación", tabName = "mapa"),
             menuItem("Plan de vacunación", tabName = "p1", icon = icon("bar-chart-o")),
@@ -231,7 +232,7 @@ server<-function(input,output){
   grafico2<-reactive(
     por_depto %>% filter(fecha %in% seq.Date(from = input$fechita1,to = input$fechita2, by = "day") & departamento %in% input$depto) %>%
       ggplot(aes(x =fecha, y = cantCasosNuevosCALC)) + geom_line(size = 0.05) + scale_x_date(date_breaks = "90 days") + 
-      theme(axis.text.x = element_text(size = 8,hjust = 0)) + labs(x = "Fecha",y = "Cantidad de casos positivos",colour = "Departamento") + 
+      theme(axis.text.x = element_text(size = 8,hjust = 0)) + labs(x = "Fecha",y = "Cantidad de casos positivos") + 
       facet_wrap(~ input$depto)
   )
   output$grafico2<-renderPlot({ grafico2() })
