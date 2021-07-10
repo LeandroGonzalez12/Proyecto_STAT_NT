@@ -389,4 +389,12 @@ Si bien hay dos picos de fallecidos desde el millón de personas vacunadas con a
 
 \pagebreak
 
+Shiny
+
+```{r}
+p_json <- plotly_json(mapita)
+print(paste0(fromJSON(p_json$x$data)$data$type, ": ", 
+             fromJSON(p_json$x$data)$data$name))#con esto sabemos que traces eliminar para que solo sea plotly lo que queremos
+```
+
 
