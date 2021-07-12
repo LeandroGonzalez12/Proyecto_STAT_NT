@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = FALSE)
 # **Introducción**
 
 Debido al virus de la COVID-19, desde principios de 2020 nos encontramos en emergencia sanitaria, la cual ha dejado un elevado número de fallecidos a nivel mundial y ha cambiado completamente nuestras vidas.
-En Uruguay, el número de casos positivos y fallecidos ha venido en aumento de forma exponencial desde fines del 2020. Asimismo, en enero 2021 comenzó el plan de vacunación, con el cual se espera dismunir los ingresos a CTI, la cantidad de fallecidos y eventualmente adquirir la inmunidad de rebaño.
+En Uruguay, el número de casos positivos y fallecidos ha venido en aumento de forma exponencial desde fines del 2020. Asimismo, en enero de 2021 comenzó el plan de vacunación, con el cual se espera dismunir los ingresos a CTI, la cantidad de fallecidos y eventualmente adquirir la inmunidad de rebaño.
 
 En base  a esto, nos vimos interesados en seguir el plan de vacunación en Uruguay, estudiando, por ejemplo, cómo el mismo puede haber influido en los casos positivos, fallecidos, etc. El objetivo del presente trabajo será utilizar los distintos tipos de visualizaciones, resúmenes y funciones aprendidas durante el curso para llevar a cabo el análisis; así como, desarrollar una aplicación Shiny que permita realizar la exploración de forma interactiva.
 
@@ -31,6 +31,7 @@ Antes de poder dar comienzo al análisis exploratorio, limpiamos y reestructuram
 library(tidyverse)
 library(ggpmisc)
 library(here)
+library(plotly)
 ```
 
 ```{r,echo=FALSE, warning=FALSE,message=FALSE}
@@ -135,10 +136,10 @@ Se observa con claridad que, en la mayoría de los días tomados en cuenta para 
 
 Observando detalladamente el gráfico, se puede apreciar que los días en que más dosis se suministraron fueron entre los primeros 15 días del mes de abril, período que incluyó la semana de turismo. En este lapso temporal se vacunó a población de un gran rango etario que iba desde los 18 años en adelante. Por otra parte, la vacuna elaborada por la empresa farmacéutica de orígen estadounidense, Pfizer, tuvo su pico en torno al 10 de abril, hecho que se explica por el comienzo del plan vacunatorio para gran parte de los trabajadores de la salud ; con excepción de los que trabajan en áreas de mayor urgencia, como por ejemplo: block quirúrgico, servicios de apoyo CTI, y demás, que fueron vacunados en marzo con Sinovac.
 
-Respecto a la vacuna desarrollada por el laboratorio Astrazeneca con la Universidad de Oxford, que en primera instancia pretendía suministrarse a las franjas etarias mayores, *a las personas no les pareció muy buena idea.* Solamente a mediados de abril fueron aplicadas cerca de 20000 dosis. Luego, las cifras fueron considerablemente menores, cuando en realidad existía mayor cantidad disponible. Esto puede deberse porque la vacuna de éste laboratorio llegó a Uruguay en un momento de dudas sobre sus efectos, al detectarse casos de trombosis tras su aplicación. Por su parte, el MSP (Ministerio de Salud Pública) y la comunidad científica internacional aseguran que los beneficios son mayores que los posibles riesgos.
+Respecto a la vacuna desarrollada por el laboratorio Astrazeneca con la Universidad de Oxford, que en primera instancia pretendía suministrarse a las franjas etarias mayores. Solamente a mediados de abril fueron aplicadas cerca de 20000 dosis. Luego, las cifras fueron considerablemente menores, cuando en realidad existía mayor cantidad disponible. Esto puede deberse porque la vacuna de éste laboratorio llegó a Uruguay en un momento de dudas sobre sus efectos, al detectarse casos de trombosis tras su aplicación. Por su parte, el MSP (Ministerio de Salud Pública) y la comunidad científica internacional aseguran que los beneficios son mayores que los posibles riesgos.
 
 
-Siguiendo la misma línea de análisis de la pregunta anterior, nos preguntamos por dicha cantidad, o sea, cuál fue la proporción de personas vacunadas por dicho laboratorio hasta el último día de registro de los datos (23/6). Los resultados son los siguientes:
+Siguiendo la misma línea de análisis de la pregunta anterior, nos preguntamos por dicha cantidad, o sea, cuál fue la proporción de personas vacunadas por cada laboratorio hasta el último día de registro de los datos (23/6). Los resultados son los siguientes:
 
 ```{r, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center', fig.cap="Grafico de barras que representa la proporcion de dosis suministradas por laboratorio"}
 
@@ -159,7 +160,7 @@ Se observa que a lo largo del plan vacunatorio, la vacuna proveniente del labora
 
 También, se vacunó con ella a diversas poblaciones, empezando con los que desempeñaban alguna ocupación de riesgo y gran necesidad (bomberos, policías, personal de la educación), pasando por personas de distintas ocupaciones y edades.
 
-Asimismo, en segundo lugar, la del laboratorio Pfizer se ha aplicado a poblaciones mas específicas, como personal de salud y edades en las cuales aún no se habían realizado estudios con la china (Sinovac). Aproximadamente entre el 22% y 25% de las dosis suministradas fueron por Pfizer.
+Asimismo, en segundo lugar, la del laboratorio Pfizer se ha aplicado a poblaciones mas específicas, como personal de salud y edades en las cuales aún no se habían realizado estudios con la china (Sinovac). Aproximadamente el 24% de las dosis suministradas fueron por Pfizer.
 
 Por último, como se comentaba anteriormente, la vacuna Astrazeneca, además de haberse adquirido en menor proporción, también fue la más resistida. Tan solo cerca del 1% de las dosis que se suministraron en el territorio uruguayo provienen de este laboratorio.
 
@@ -233,7 +234,7 @@ Se puede apreciar que 229616 personas aún no tienen la 2da dosis de la vacuna e
 
 Por otra parte, sabemos que Montevideo y Canelones son los departamentos con mayor población de Uruguay, por lo que sería 'evidente' decir que son los lugares con mayor cantidad de vacunados. De todos modos, la vacunación en el territorio viene siendo relativamente pareja en todos los departamentos, con alguna excepción.
 
-Por ende, decimos analizar en el siguiente diagrama de barras, si realmente la relación vacuna/población es relativamente proporcional en éstos departamentos (Montevideo y Canelones).
+Por ende, decidimos analizar en el siguiente diagrama de barras, si realmente **la relación vacuna/población es relativamente proporcional en éstos departamentos** (Montevideo y Canelones).
 
 ```{r,echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Grafico de barras mostrando la proporcion de vacunados segun departamento"}
 
@@ -263,7 +264,7 @@ También, cabe destacar que en este último mes se están vacunando a los adoles
 
 Sabemos que en el año 2020, el COVID-19 ha afectado de manera muy diferente a todos los departamentos, habiendo algunos casi sin casos o muy pocos, y centralizándose la mayor cantidad en la capital y alrededores (Montevideo y Canelones) y además en algunos departamentos del norte del país (Salto, Rivera).
 
-Esto cambio rotundamente en el 2021, ya que a partir de ahí comenzó a haber un excesivo aumento de casos, ya sea por el verano que la gente empezó a salir con mayor frecuencia por lo que se "cuidó" menos, no hubo un gran manejo de la pandemia, o simplemtente, al ser un virus tan contagioso y con la aparición de nuevas cepas (Alpha, Beta, Gamma, Delta), el mismo mutó y desencadenó una gran cantidad de contagios.
+Esto cambió rotundamente en el 2021, ya que a partir de ahí comenzó a haber un excesivo aumento de casos, ya sea por el verano que la gente empezó a salir con mayor frecuencia por lo que se "cuidó" menos, no hubo un gran manejo de la pandemia, o simplemente, al ser un virus tan contagioso y con la aparición de nuevas cepas (Alpha, Beta, Gamma, Delta), el mismo mutó y desencadenó una gran cantidad de contagios.
 
 ###### **Recordatorio** Como mencionamos al principio del informe, solamente vamos a analizar los datos a partir del tercer mes del año, hasta mediados de Junio. 
 
@@ -319,7 +320,7 @@ por_depto %>% group_by(departamento) %>%
 Se puede ver en el gráfico que los 2 departamentos que mayor población tienen en todo el país (Montevideo y Canelones) son los que tienen mayor cantidad de fallecidos.
 
 
-Por otra parte, Flores, que es el que departamento que menor población tiene (un poco más de 24000 personas) es el departamento que tiene menor cantidad, ya que como mencionamos anteriormente, es el lugar que tiene menor población del Uruguay por lo que la cantidad de fallecimientos y contagios condice con su población.
+Por otra parte, Flores, que es el que departamento que menor población tiene (un poco más de 24000 personas) es el que tiene menor cantidad de fallecimientos y contagios. Por tanto, podemos decir que en este departamento estas dos cantidades se condicen con su población.
 
 \pagebreak
 
@@ -348,7 +349,7 @@ ggplot(data=muertes_vacunados)+geom_line(aes(x=date, y=people_fully_vaccinated))
 
 ```
 
-Se puede ver que crece de forma aparentemente exponencial. Desde mediados de mayo hasta junio, se podría observar un pequeño estancamiento. Luego, si queremos analizar la cantidad de fallecidos a los largo de los días en dicho perído de análisis, realizaremos otra línea temporal mostrando las diferentes cantidades de decesos que tuvo esta pandemia.
+Se puede ver que crece de forma aparentemente exponencial. Desde mediados de mayo hasta junio, se podría observar un pequeño estancamiento. Luego, si queremos analizar la cantidad de fallecidos a lo largo de los días en dicho perído de análisis, realizaremos otra línea temporal mostrando las diferentes cantidades de decesos que tuvo esta pandemia.
 
 ```{r,echo = FALSE,warning=FALSE,message=FALSE, fig.cap='Gráfico temporal que muestra la evolución en la cantidad de fallecidos diarios.'}
 ggplot(data=muertes_vacunados,aes(x=date, y=muertes_totales_diarias))+geom_line() +
@@ -382,19 +383,35 @@ ggplot(data=muertes_vacunados,aes(x=people_fully_vaccinated, y=muertes_totales_d
   scale_x_continuous(n.breaks =8)
 ```
 
-Se nota que hasta las 250.000 personas vacunadas con ambas dosis, podemos ver una tendencia a aumentar la cantidad de fallecidos diarios. En promedio, desde los 250.000 hasta el 1.000.000 de personas completamente vacunadas, 57,9 personas fallecieron diariamente. 
+Se nota que hasta las 250.000 personas vacunadas con ambas dosis, podemos ver una tendencia a aumentar la cantidad de fallecidos diarios. En promedio, desde los 250.000 hasta 1.000.000 de personas completamente vacunadas, 57,9 personas fallecieron diariamente. 
 
 Si bien hay dos picos de fallecidos desde el millón de personas vacunadas con ambas dosis, en promedio, dicha cantidad ha disminuido, cayendo a 45.4 personas fallecidas diariamente.
 
 
 \pagebreak
 
-Shiny
+## Descripción de la aplicación Shiny
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 p_json <- plotly_json(mapita)
 print(paste0(fromJSON(p_json$x$data)$data$type, ": ", 
              fromJSON(p_json$x$data)$data$name))#con esto sabemos que traces eliminar para que solo sea plotly lo que queremos
 ```
 
+Con el objetivo de complementar el contenido de este informe, a la vez que presentarlo de una manera práctica e interactiva, llevamos a cabo el desarrollo de una aplicación shiny.
 
+Dicha app se compone de la siguiente manera: al ingresar emerge una ventana que funciona como introducción y narra de que se trata la misma, además presenta a quienes la desarrollaron. Luego el contenido se dispone en 5 pestañas ubicadas verticalmente en el sector superior izquierdo de la pantalla.
+
+La primera pestaña refiere a vacunación, en esta se puede ver un mapa de Uruguay en el cual al pasar el cursor por encima de cada departamento, se muestra la cantidad de personas que se han vacunado y cuantas de estas lo han hecho con ambas dosis.
+
+En segundo lugar se muestra según el laboratorio elegido y el rango temporal seleccionado, un gráfico que representa la cantidad de dosis suministradas por cada día en todo el territorio nacional. Debajo de este se encuentra un gráfico de barras expresado en miles de dosis, con el total acumulado de dosis por laboratorio, en las fechas elegidas.
+
+La tercera pestaña de nuestra app, contiene un gráfico de línea que muestra la cantidad de dosis aplicadas a la población uruguaya, donde se puede elegir si graficar la primera dosis, la segunda, o ambas. Otra característica con la cual es posible interactuar es el rango de fechas.
+
+En la cuarta pestaña se puede observar una serie temporal que representa la evolución en la cantidad de casos positivos de COVID-19. Aquí se pueden elegir tanto el departamento como la fecha inicial, y la fecha final.
+
+Por último se decide llevar a cabo una comparación a través de un gráfico de línea, de como ha evolucionado la cantidad de fallecidos en Uruguay a medida que el plan de vacunación avanza.
+
+
+
+## Conclusiones

@@ -94,10 +94,10 @@ por_depto <- por_depto %>% mutate(departamento = recode(departamento,
                                                         'Cerro Largo(UY-CL)'='Cerro Largo', 'Colonia(UY-CO)'='Colonia',
                                                         'Durazno(UY-DU)'='Durazno','Flores(UY-FS)'='Flores','Florida(UY-FD)'='Florida',
                                                         'Lavalleja(UY-LA)'='Lavalleja', 'Maldonado(UY-MA)'='Maldonado',
-                                                        'Montevideo(UY-MO)'='Montevideo','Paysandú(UY-PA)'='Paysandu', 
-                                                        'Río Negro(UY-RN)'='Rio Negro','Rivera(UY-RV)'='Rivera','Rocha(UY-RO)'='Rocha',
+                                                        'Montevideo(UY-MO)'='Montevideo','Paysandú(UY-PA)'='Paysandú', 
+                                                        'Río Negro(UY-RN)'='Río Negro','Rivera(UY-RV)'='Rivera','Rocha(UY-RO)'='Rocha',
                                                         'Salto(UY-SA)'='Salto','San José(UY-SJ)'='San José','Soriano(UY-SO)'='Soriano',
-                                                        'Tacuarembó(UY-TA)'='Tacuarembo', 'Treinta y Tres(UY-TT)'='Treinta y Tres'))
+                                                        'Tacuarembó(UY-TA)'='Tacuarembó', 'Treinta y Tres(UY-TT)'='Treinta y Tres'))
 
 
 completas_pais_hasta_mayo<- uruguay %>% 
@@ -187,7 +187,7 @@ ui <- dashboardPage(skin = "green",
                         tabItem(tabName = "p3",
                                 h4("¿Cómo fue la evolución de casos positivos dependiendo del departamento?", align="center", plotOutput("grafico2")),
                                 selectInput(inputId =  "depto", label = "Elegir departamento",choices = c("Artigas", "Canelones", "Cerro Largo", 
-                                                                                                          "Colonia","Durazno", "Florida", "Flores", "Lavalleja","Maldonado", "Montevideo", "Paysandú", "Rio Negro",
+                                                                                                          "Colonia","Durazno", "Florida", "Flores", "Lavalleja","Maldonado", "Montevideo", "Paysandú", "Río Negro",
                                                                                                           "Rocha", "Rivera", "Salto", "San José", "Soriano","Tacuarembó", "Treinta y Tres"),selected = "Montevideo"),
                                 dateInput(inputId = "fechita1", label = "Fecha inicial",value = "2020-04-29",min = "2020-04-29",max = "2021-06-25"),
                                 dateInput(inputId = "fechita2", label = "Fecha final",value = "2021-06-25",min = "2020-04-29",max = "2021-06-25")
