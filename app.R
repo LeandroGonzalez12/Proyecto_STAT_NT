@@ -13,133 +13,9 @@ library(plotly)
 library(shinyalert)
 library(shinydashboard)
 
+#cargamos los datos desde script auxiliar
+source("datos.R")
 
-uruguay <- read_csv(here("data","Uruguay.csv")) #Cargamos datos de vacunacion.
-
-# 1 - Dado que los nombres de las variables se encuentran en ingles.
-# Se renombran para facilitar la interpretacion.
-uruguay <- uruguay %>% rename(diario_coronavac = daily_coronavac,
-                              acum_coronavac = total_coronavac,primDiario_coronavac = people_coronavac,
-                              segDiario_coronavac  = fully_coronavac,diario_pfizer = daily_pfizer,
-                              acum_pfizer = total_pfizer,primDiario_pfizer = people_pfizer,
-                              segDiario_pfizer = fully_pfizer,diario_astrazeneca = daily_astrazeneca,
-                              acum_astrazeneca = total_astrazeneca,primDiario_astrazeneca = people_astrazeneca,
-                              segDiario_astrazeneca = fully_astrazeneca)
-
-# 2 - De "uruguay" anterior, nos interesan en particular ciertas columnas. 
-# Tambien se reestructuran datos y cambian nombre de los departamentos.
-vacunacion_uru <- uruguay %>% select(-c(1,3:29),-contains("res")) %>% 
-  pivot_longer(cols = c(starts_with("total"),starts_with("fully"),starts_with("daily"),
-                        starts_with("people")),names_to = "departamento",values_to = c("total")) %>% 
-  separate(col = departamento,into = c("arranca","depar")) %>% 
-  pivot_wider(names_from = arranca,values_from = total) %>% 
-  mutate(depar = recode(depar, 'ar'='Artigas', 
-                        'ca'='Canelones', 'cl'='Cerro Largo', 'co'='Colonia','du'='Durazno',
-                        'fd'='Florida', 'fs'='Flores', 'la'='Lavalleja', 'ma'='Maldonado',
-                        'mo'='Montevideo','pa'='Paysandú', 'rn'='Rio Negro','ro'='Rocha',
-                        'rv'='Rivera','sa'='Salto','sj'='San José','so'='Soriano',
-                        'ta'='Tacuarembó', 'tt'='Treinta y Tres')) %>% 
-  mutate(depar = as.factor(depar))
-
-# 3 - Se crea otro data.frame (total_lab) con los tipos de vacuna 
-total_lab <- select(uruguay,date,diario_coronavac,acum_coronavac,primDiario_coronavac,
-                    segDiario_coronavac,diario_pfizer,acum_pfizer,primDiario_pfizer,segDiario_pfizer,
-                    diario_astrazeneca,acum_astrazeneca,primDiario_astrazeneca,segDiario_astrazeneca,
-                    people_vaccinated,people_fully_vaccinated,
-                    daily_vaccinated,total_vaccinations,daily_agenda,daily_pogress)
-
-# 
-# 4 - El conjunto de datos Deaths muestra los datos de fallecimiento segun edad,
-#pero no por departamento, actualizado hasta el dia 22/6
-muertes_edad <- read_csv("data/Deaths.csv")
-
-# 5 - De dichos datos, se eligen las primeras 17 columnas,
-#ya que las otras son tramos distintos de edad.
-#Estos tramos son excluyentes y cubren de 0 a 115
-
-muertes_edad <-muertes_edad %>% select(1:17) %>%
-  pivot_longer(cols = c(starts_with("total"),starts_with("daily")),
-               names_to = "tramo_etario",values_to = "numeros")
-muertes_edad <-muertes_edad %>% separate(col = tramo_etario,
-                                         into = c("arranca","tramo"),sep = 5)
-muertes_edad <-muertes_edad %>% pivot_wider(names_from = arranca,values_from = numeros)
-muertes_edad <-muertes_edad %>% mutate(tramo = recode(tramo, '_0_17'  = '[0,17]' ,
-                                                      '_18_24'  = '[18,24]' ,'_25_34' = '[25,34]', '_35_44'  = '[35,44]' ,
-                                                      '_45_54' = '[45,54]','_55_64'  = '[55,64]' ,'_65_74' = '[65,74]', '_75_115' = '[75,115]')) %>%
-  mutate(tramo_etario = as.factor(tramo)) %>% select(-tramo)
-
-# 6 - Se cargan datos de vacunacion por departamento
-departamentos <- read_csv("data/Regions.csv")
-
-# 7 - Se cargan los datos del GUIAD
-por_depto <- read_csv("data/estadisticasUY_porDepto_detalle.csv")
-nacional  <- read_csv("data/estadisticasUY.csv")
-
-# 8 - Separamos en 2 bases de datos
-
-labs <- total_lab %>% select(date,c(contains("pfizer"),contains("coronavac"),
-                                    contains("astrazeneca")))
-total <- total_lab %>% select(-c(contains("pfizer"),contains("coronavac"),
-                                 contains("astrazeneca")))
-
-# 9 - Reestructuramos los datos de laboratorio.
-labs <-labs %>%  pivot_longer(cols = c(ends_with("astrazeneca"),ends_with("pfizer"),
-                                       ends_with("coronavac")),names_to = "laboratorio",values_to = "numeros")
-labs <- labs %>% separate(col = laboratorio, into = c("arranca","lab"))
-labs <-labs %>% pivot_wider(names_from = arranca,values_from = numeros)
-
-por_depto$fecha = as.Date(por_depto$fecha, format = "%d/%m/%Y")
-por_depto <- por_depto %>% mutate(departamento = recode(departamento, 
-                                                        'Artigas(UY-AR)'='Artigas', 'Canelones(UY-CA)'='Canelones',
-                                                        'Cerro Largo(UY-CL)'='Cerro Largo', 'Colonia(UY-CO)'='Colonia',
-                                                        'Durazno(UY-DU)'='Durazno','Flores(UY-FS)'='Flores','Florida(UY-FD)'='Florida',
-                                                        'Lavalleja(UY-LA)'='Lavalleja', 'Maldonado(UY-MA)'='Maldonado',
-                                                        'Montevideo(UY-MO)'='Montevideo','Paysandú(UY-PA)'='Paysandú', 
-                                                        'Río Negro(UY-RN)'='Río Negro','Rivera(UY-RV)'='Rivera','Rocha(UY-RO)'='Rocha',
-                                                        'Salto(UY-SA)'='Salto','San José(UY-SJ)'='San José','Soriano(UY-SO)'='Soriano',
-                                                        'Tacuarembó(UY-TA)'='Tacuarembó', 'Treinta y Tres(UY-TT)'='Treinta y Tres'))
-
-
-completas_pais_hasta_mayo<- uruguay %>% 
-  select(date, total_vaccinations, people_vaccinated) %>%
-  filter(date >= "2021-02-27" & date <="2021-05-26")
-
-completas_pais_hasta_junio<- uruguay %>% 
-  select(date, total_vaccinations, people_fully_vaccinated) %>%
-  filter(date >= "2021-02-27" & date <="2021-06-23")
-completitas<-
-  merge(x=completas_pais_hasta_mayo, y=completas_pais_hasta_junio, all=TRUE) %>% 
-  rename(fecha = date,
-         vacunaciones_totales = total_vaccinations,
-         primera = people_vaccinated,
-         segunda = people_fully_vaccinated) %>%  
-  pivot_longer(cols = c("primera","segunda"),names_to = "dosis",values_to = "cantidad")
-muertes_diarias <- muertes_edad %>% group_by(date) %>% 
-  summarise(muertes_totales_diarias=sum(daily))
-
-personas_totalmente_vacunadas <- uruguay %>% select(date, people_fully_vaccinated)
-muertes_vacunados <- merge(muertes_diarias, personas_totalmente_vacunadas)
-#datos necesarios para el mapita
-
-sp_depto <- readOGR(here("data","ine_depto.shp"))
-dframe_depto <- ggplot2::fortify(sp_depto) #conviere a data.frame
-
-dframe_depto <- dframe_depto %>% filter(id!=15) %>% rename( Departamento = id) %>% 
-  mutate(Departamento= recode(Departamento, '0'='Montevideo', '1'='Artigas','2'='Canelones','3'='Colonia','4'='Durazno', 
-                              '5'='Florida','6'='Lavalleja','7'='Paysandú','8'='Río Negro',
-                              '9'='Rivera','10'='Rocha','11'='Salto','12'='San José',
-                              '13'='Soriano','14'='Treinta y Tres','16'='Tacuarembó','17'='Flores',
-                              '18'='Maldonado','19'='Cerro Largo'))
-
-departamentos <- read_csv("data/Regions.csv")
-departamentos<-departamentos %>% rename(Fully_Vaccinated='Fully Vaccinated',Departamento=Region)
-
-
-
-datos_mapa <- left_join(dframe_depto , departamentos, by = "Departamento")
-lab.data <- datos_mapa %>%
-  group_by(depa=Departamento) %>%
-  summarise(long = mean(long), lat = mean(lat))
 
 ui <- dashboardPage(skin = "green",
                     dashboardHeader(titleWidth  = 200, title = "Menú"),
@@ -187,8 +63,10 @@ ui <- dashboardPage(skin = "green",
                         tabItem(tabName = "p3",
                                 h4("¿Cómo fue la evolución de casos positivos dependiendo del departamento?", align="center", plotOutput("grafico2")),
                                 selectInput(inputId =  "depto", label = "Elegir departamento",choices = c("Artigas", "Canelones", "Cerro Largo", 
-                                                                                                          "Colonia","Durazno", "Florida", "Flores", "Lavalleja","Maldonado", "Montevideo", "Paysandú", "Río Negro",
-                                                                                                          "Rocha", "Rivera", "Salto", "San José", "Soriano","Tacuarembó", "Treinta y Tres"),selected = "Montevideo"),
+                                                                                                          "Colonia","Durazno", "Florida", "Flores",
+                                                                                                          "Lavalleja","Maldonado", "Montevideo", "Paysandú", "Río Negro",
+                                                                                                          "Rocha", "Rivera", "Salto", "San José",
+                                                                                                          "Soriano","Tacuarembó", "Treinta y Tres"),selected = "Montevideo"),
                                 dateInput(inputId = "fechita1", label = "Fecha inicial",value = "2020-04-29",min = "2020-04-29",max = "2021-06-25"),
                                 dateInput(inputId = "fechita2", label = "Fecha final",value = "2021-06-25",min = "2020-04-29",max = "2021-06-25")
                         ),
