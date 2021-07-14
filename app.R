@@ -14,7 +14,7 @@ library(shinyalert)
 library(shinydashboard)
 
 #cargamos los datos desde script auxiliar
-source("datos.R")
+source("datos.R", encoding = 'UTF-8')
 
 
 ui <- dashboardPage(skin = "green",
