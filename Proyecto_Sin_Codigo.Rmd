@@ -98,7 +98,7 @@ Por último, como se comentaba anteriormente, la vacuna Astrazeneca, además de 
 
 En los medios de comunicación comentaron que gran cantidad de personas se ha dado la primera dosis de la vacuna pero no la segunda dosis, esto puede deberse por diferentes motivos (han tenido COVID y no podían vacunarse, desconfiaron luego de la primer dosis, etc). Por lo que nos pareció interesante investigar cuál fue la proporción de personas que se dieron la primer dosis hasta el 26/5 pero no la segunda.
 
-```{r, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la proporcion de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06."}
+```{r, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la proporción de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06."}
 
 ### Pregunta 2 - Hasta el 23/06, ¿todas las personas con primera dosis antes del 26/05 recibieron la segunda dosis?. Si no es así, ¿Cuántas personas no se dieron la segunda dosis?
 
@@ -133,29 +133,31 @@ completas_pais %>%
 ```
 
 
-Se puede observar que toda la población (que se agendó para vacunarse, no a nivel país) se encuentra vacunada, mientras que más del 85% de la población se dió la 2da dosis.
+Se puede observar que toda la población (que se agendó para vacunarse, no a nivel país) se encuentra vacunada, mientras que más del 85% de la población se dio la 2da dosis.
 
 Un dato importante que se puede ver en dicho gráfico es que de todas las personas que se vacunaron con una dosis hasta el 26/05/2021, solamente un 13,6% no se dieron la segunda dosis a los 28 días.
 
 
 
-**¿Y si analizamos a nivel país?**
+**¿Y si analizamos según las fechas?**
 
-```{r, echo=FALSE, warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la cantidad de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06 a nivel pais"}
+```{r, echo=FALSE, warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de líneas mostrando la cantidad de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06 a nivel país"}
 
-completas_pais %>% 
-  ggplot(aes(x=Numero_dosis, y=Cant_dosis))+
-  geom_col()+ theme(aspect.ratio = 2)+
-  scale_fill_brewer( labels=c('people_fully_vaccinated'='2 dosis',
-                                                'people_vaccinated'='1 dosis'))+
-  scale_x_discrete(labels=c('people_fully_vaccinated'='2 dosis',
-                            'people_vaccinated'='1 dosis'))+
-  labs(x="Dosis por persona", y="Cantidad de dosis")+
-  geom_text(aes(x=Numero_dosis, label =paste(Cant_dosis), vjust = -0.1, face = "bold"))
-
+completitas %>% 
+  ggplot(aes(x = fecha, y = cantidad, colour = dosis)) +
+  geom_line(size=1) +
+  scale_colour_brewer(palette = "Dark2") + scale_x_date(date_breaks = "10 days") + 
+  theme(axis.text.x = element_text(size = 7, angle = 90, hjust = 0))+
+  labs(x="Fecha", y="Cantidad de vacunas", colour = "Dosis")+
+  geom_text(data=. %>% 
+              arrange(desc(cantidad)) %>% 
+              group_by(dosis) %>% 
+              slice(1), 
+            aes(label=cantidad), 
+            position=position_nudge(0.1), hjust=1.2, show.legend=FALSE)
 ```
 
-Se puede apreciar que 229616 personas aún no tienen la 2da dosis de la vacuna en el Uruguay. Cabe destacar que más de 200.000  personas fueron las que aún no decidieron vacunarse, ya que (como mencionamos anteriormente), no creen en la efectividad de la vacuna, no suelen vacunarse, pueden haber tenido covid en ese lapso de tiempo y no han podido inocularse, entre otras. 
+Se puede apreciar que 229616 personas que se dieron la primera dosis antes del 26/05 no se dieron la segunda dosis de la vacuna en el Uruguay. Esto puede deberse a que esas más de 200000 personas no creen en la efectividad de la vacuna, no suelen vacunarse, pueden haberse contagiado de COVID-19 en ese lapso de tiempo, entre otras situaciones. 
 
 *Ésta última cantidad de personas proviene de sumar ambos valores del gráfico y restárselo a la población de Uruguay (más de 3.300.000 de personas)*
 
