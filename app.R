@@ -126,11 +126,18 @@ server<-function(input,output){
   output$grafico2_2<-renderPlot({grafico2_2()})
   
   grafico3 <- reactive(
-    completitas %>% filter(fecha %in% seq.Date(from = input$fechaza1,to = input$fechaza2,by = "10 days") & dosis %in% input$dosis) %>%
-      ggplot(aes(x = fecha, y = cantidad, colour = dosis)) + geom_line() + 
-      scale_colour_brewer(palette = "Dark2") + scale_x_date(date_breaks = "10 days") + 
+    completitas %>% filter(fecha %in% seq.Date(from = input$fechaza1,to = input$fechaza2, by="day") & dosis %in% input$dosis) %>%
+      ggplot(aes(x = fecha, y = cantidad, colour = dosis)) + 
+      geom_line(size=1) + 
+      scale_colour_brewer(palette = "Dark2") + scale_x_date(date_breaks = "20 days") + 
       theme(axis.text.x = element_text(size = 7, angle = 90, hjust = 0))+
-      labs(x="Fecha", y="Cantidad de vacunas", colour = "Dosis")
+      labs(x="Fecha", y="Cantidad de vacunas", colour = "Dosis")+
+      geom_text(data=. %>% 
+                  arrange(desc(cantidad)) %>% 
+                  group_by(dosis) %>% 
+                  slice(1), 
+                aes(label=cantidad), 
+                position=position_nudge(0.1), hjust=1.2, show.legend=FALSE)
   )
   output$grafico3 <- renderPlot({ grafico3() })
   
