@@ -316,12 +316,6 @@ Si bien hay dos picos de fallecidos desde el millón de personas vacunadas con a
 
 ## Descripción de la aplicación Shiny
 
-```{r eval=FALSE, include=FALSE}
-p_json <- plotly_json(mapita)
-print(paste0(fromJSON(p_json$x$data)$data$type, ": ", 
-             fromJSON(p_json$x$data)$data$name))#con esto sabemos que traces eliminar para que solo sea plotly lo que queremos
-```
-
 Con el objetivo de complementar el contenido de este informe, a la vez que presentarlo de una manera práctica e interactiva, llevamos a cabo el desarrollo de una aplicación shiny.
 
 Dicha app se compone de la siguiente manera: al ingresar emerge una ventana que funciona como introducción y narra de que se trata la misma, además presenta a quienes la desarrollaron. Luego el contenido se dispone en 5 pestañas ubicadas verticalmente en el sector superior izquierdo de la pantalla.
@@ -339,3 +333,37 @@ Por último se decide llevar a cabo una comparación a través de un gráfico de
 
 
 ## Conclusiones
+
+Al comienzo de dicho reporte, nos propusimos seguir el plan de vacunación. Como comentario general, la vacuna mayor aplicada fue la CoronaVac, del laboratorio Sinovac.
+También nos propusimos investigar cómo dicho plan podría haber influido en la cantidad de casos positivos, fallecimientos, etc.
+A partir del mes de Junio, la cantidad de casos positivos diarios ha ido disminuyendo, producto de dicho plan. A día de hoy, ya se alcanzaron los 2 millones de personas vacunadas con ambas dosis y si bien la situación sanitaria en Uruguay ha sido muy cambiante, según el Ministro de Salud Pública se observa una ['marcadísima incidencia del efecto de la vacuna en los nuevos casos, con un descenso abrupto'](https://ladiaria.com.uy/coronavirus/articulo/2021/7/salinas-aseguro-que-se-constato-una-marcadisima-incidencia-del-efecto-de-la-vacuna/).
+Con respecto a la cantidad de fallecimientos diarios, pareciera que también vienen en descenso, pero no podríamos confirmarlo con los datos que tenemos actualizados hasta el 23/06.
+Por esta razón, como posible extensión de este trabajo podría ser seguir la evolución mes a mes, para así poder seguir estudiando el avance de la pandemia.
+Por último, podríamos realizar un modelo para poder predecir dicho avance.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
