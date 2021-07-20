@@ -1,7 +1,7 @@
 ---
-title: "Proyecto Final - Nuevas Tecnologias para el Análisis de datos  STAT NT"
-author: "Eugenia Bagnasco - Lucas Caram - Federico Colombo - Leandro Gonzalez"
-date: "09/07/2021"
+title: "Proyecto Final - Nuevas Tecnologías para el Análisis de datos  STAT NT"
+author: "Eugenia Bagnasco - Lucas Caram - Federico Colombo - Leandro González"
+date: "21/07/2021"
 output:
   pdf_document: default
   html_document: default
@@ -16,14 +16,14 @@ knitr::opts_chunk$set(echo = FALSE)
 # **Introducción**
 
 Debido al virus de la COVID-19, desde principios de 2020 nos encontramos en emergencia sanitaria, la cual ha dejado un elevado número de fallecidos a nivel mundial y ha cambiado completamente nuestras vidas.
-En Uruguay, el número de casos positivos y fallecidos ha venido en aumento de forma exponencial desde fines del 2020. Asimismo, en enero de 2021 comenzó el plan de vacunación, con el cual se espera dismunir los ingresos a CTI, la cantidad de fallecidos y eventualmente adquirir la inmunidad de rebaño.
+En Uruguay el número de casos positivos y fallecidos ha venido en aumento de forma exponencial desde fines del 2020. Asimismo, en enero de 2021 comenzó el plan de vacunación con el cual se espera dismunir los ingresos a CTI, la cantidad de fallecidos y eventualmente adquirir la inmunidad de rebaño.
 
-En base  a esto, nos vimos interesados en seguir el plan de vacunación en Uruguay, estudiando, por ejemplo, cómo el mismo puede haber influido en los casos positivos, fallecidos, etc. El objetivo del presente trabajo será utilizar distintos tipos de visualizaciones, resúmenes y funciones aprendidas durante el curso para llevar a cabo el análisis; así como, desarrollar una aplicación Shiny que permita realizar la exploración de forma interactiva.
+En base  a esto, nos vimos interesados en seguir el plan de vacunación en Uruguay, estudiando, por ejemplo, cómo el mismo puede haber influido en los casos positivos, fallecidos, etc. El objetivo del presente trabajo será utilizar distintos tipos de visualizaciones, resúmenes y funciones aprendidas durante el curso para llevar a cabo el análisis, así como desarrollar una aplicación Shiny que permita realizar la exploración de forma interactiva.
 
-Para esto, utilizamos 2 conjuntos de datos, los cuales están compuestos por varias bases. Toda la información es vinculada a datos sobre COVID-19 en Uruguay, como lo son: muertes, casos diarios, vacunados, etc. El horizonte temporal que tendremos en cuenta será el *comprendido entre el 29 de abril de 2020 y 23 de Junio del año corriente.*
+Para esto utilizamos 2 conjuntos de datos, los cuales están compuestos por varias bases. Toda la información es vinculada a datos sobre COVID-19 en Uruguay, como lo son: muertes, casos diarios, vacunados, etc. El horizonte temporal que tendremos en cuenta será el *comprendido entre el 29 de abril de 2020 y 23 de junio del año corriente.*
 
 Las fuentes de donde extraímos la información son: [Proyecto Coronavirus](https://www.gub.uy/ministerio-salud-publica/coronavirus), los
-datos del [GUIAD(Grupo Uruguayo Interdisciplinario de Análisis de Datos)](https://guiad-covid.github.io/) y ademas un [repo](https://github.com/3dgiordano/covid-19-uy-vacc-data/blob/main/data/Uruguay.csv) de 3dgiordano.
+datos del [GUIAD(Grupo Uruguayo Interdisciplinario de Análisis de Datos)](https://guiad-covid.github.io/) y además un [repo](https://github.com/3dgiordano/covid-19-uy-vacc-data/blob/main/data/Uruguay.csv) de 3dgiordano.
 
 Antes de poder dar comienzo al análisis exploratorio, limpiamos y reestructuramos algunos datos. De forma que el análisis sea más claro.
 
@@ -46,7 +46,7 @@ source("datos.R", encoding = 'UTF-8')
 
 ### Plan de vacunación.
 
-Tal y cómo planteamos en la introducción, nuestro principal interés se encuentra en el plan de vacunación. Queremos saber cómo ha evolucionado en el correr del tiempo (recordar que el plan de vacunación *comenzó el 27 de febrero* de 2021), si las mismas fueron efectivas, los diferentes laboratorios proveedores de vacunas y demás.
+Tal y como planteamos en la introducción, nuestro principal interés se encuentra en el plan de vacunación. Queremos saber cómo ha evolucionado en el correr del tiempo (recordar que el plan de vacunación *comenzó el 27 de febrero* de 2021), si las mismas fueron efectivas, los diferentes laboratorios proveedores de vacunas y demás.
 
 Para comenzar este análisis, nos preguntamos cómo avanzó dicho plan y qué cantidad de vacunas han sido suministradas por cada laboratorio.
 
@@ -64,9 +64,9 @@ En el gráfico se puede observar que en Uruguay, solamente 3 laboratorios (hasta
 
 Se observa con claridad que, en la mayoría de los días tomados en cuenta para realizar el gráfico, se suministró más cantidad de dosis con la vacuna del laboratorio de origen chino, Sinovac, comparando con los otros 2 laboratorios. 
 
-Observando detalladamente el gráfico, se puede apreciar que los días en que más dosis se suministraron fueron entre los primeros 15 días del mes de abril, período que incluyó la semana de turismo. En este lapso temporal se vacunó a población de un gran rango etario que iba desde los 18 años en adelante. Por otra parte, la vacuna elaborada por la empresa farmacéutica de orígen estadounidense, Pfizer, tuvo su pico en torno al 9 de abril, hecho que se explica por el comienzo del plan vacunatorio para gran parte de los trabajadores de la salud ; con excepción de los que trabajan en áreas de mayor urgencia, como por ejemplo: block quirúrgico, servicios de apoyo CTI, y demás, que fueron vacunados en marzo con Sinovac.
+Observando detalladamente el gráfico se puede apreciar que los días en que más dosis se suministraron fueron entre los primeros 15 días del mes de abril, período que incluyó la semana de turismo. En este lapso temporal se vacunó a población de un gran rango etario que iba desde los 18 años en adelante. Por otra parte, la vacuna elaborada por la empresa farmacéutica de origen estadounidense Pfizer, tuvo su pico en torno al 9 de abril, hecho que se explica por el comienzo del plan vacunatorio para gran parte de los trabajadores de la salud, con excepción de los que trabajan en áreas de mayor urgencia como, por ejemplo, block quirúrgico, servicios de apoyo CTI, y demás, que fueron vacunados en marzo con Sinovac.
 
-Respecto a la vacuna desarrollada por el laboratorio Astrazeneca con la Universidad de Oxford, que en primera instancia pretendía suministrarse a las franjas etarias mayores. Solamente a mediados de abril fueron aplicadas cerca de 20000 dosis. Luego, las cifras fueron considerablemente menores, cuando en realidad existía mayor cantidad disponible. Esto puede deberse porque la vacuna de éste laboratorio llegó a Uruguay en un momento de dudas sobre sus efectos, al detectarse casos de trombosis tras su aplicación. Por su parte, el MSP (Ministerio de Salud Pública) y la comunidad científica internacional aseguran que los beneficios son mayores que los posibles riesgos.
+Respecto a la vacuna desarrollada por el laboratorio Astrazeneca con la Universidad de Oxford, que en primera instancia pretendía suministrarse a las franjas etarias mayores, solamente a mediados de abril fueron aplicadas cerca de 20000 dosis. Luego, las cifras fueron considerablemente menores, cuando en realidad existía mayor cantidad disponible. Esto puede deberse porque la vacuna de éste laboratorio llegó a Uruguay en un momento de dudas sobre sus efectos, al detectarse casos de trombosis tras su aplicación. Por su parte, el MSP (Ministerio de Salud Pública) y la comunidad científica internacional aseguran que los beneficios son mayores que los posibles riesgos.
 
 
 Siguiendo la misma línea de análisis de la pregunta anterior, nos preguntamos por dicha cantidad, o sea, cuál fue la proporción de personas vacunadas por cada laboratorio hasta el último día de registro de los datos (23/6). Los resultados son los siguientes:
@@ -88,16 +88,16 @@ tabg %>% mutate(porc_acum = round(max_acum / sum(max_acum,na.rm = TRUE),2),
 
 Se observa que a lo largo del plan vacunatorio, la vacuna proveniente del laboratorio Sinovac ha sido adquirida en mayor cantidad por el Estado uruguayo. Además de haber sido provisto por el fondo COVAX; emparejado con esto, es la que se brindó en mayor magnitud, alrededor del 75% de las dosis.
 
-También, se vacunó con ella a diversas poblaciones, empezando con los que desempeñaban alguna ocupación de riesgo y gran necesidad (bomberos, policías, personal de la educación), pasando por personas de distintas ocupaciones y edades.
+También se vacunó con ella a diversas poblaciones, empezando con los que desempeñaban alguna ocupación de riesgo y gran necesidad (bomberos, policías, personal de la educación), pasando por personas de distintas ocupaciones y edades.
 
-Asimismo, en segundo lugar, la del laboratorio Pfizer se ha aplicado a poblaciones más específicas, como personal de salud y edades en las cuales aún no se habían realizado estudios con la china (Sinovac). Aproximadamente el 24% de las dosis suministradas fueron por Pfizer.
+Asimismo, en segundo lugar, la del laboratorio Pfizer se ha aplicado a poblaciones más específicas, como personal de salud y edades en las cuales aún no se habían realizado estudios con la china (Sinovac). Aproximadamente el 24% de las dosis suministradas fueron de Pfizer.
 
 Por último, como se comentaba anteriormente, la vacuna Astrazeneca, además de haberse adquirido en menor proporción, también fue la más resistida. Tan solo cerca del 1% de las dosis que se suministraron en el territorio uruguayo provienen de este laboratorio.
 
 
 ### Primera y segunda dosis
 
-En los medios de comunicación comentaron que gran cantidad de personas se ha dado la primera dosis de la vacuna pero no la segunda dosis, esto puede deberse por diferentes motivos (han tenido COVID y no podían vacunarse, desconfiaron luego de la primer dosis, etc). Por lo que nos pareció interesante investigar cuál fue la proporción de personas que se dieron la primer dosis hasta el 26/5 pero no la segunda.
+En los medios de comunicación comentaron que gran cantidad de personas se ha dado la primera dosis de la vacuna pero no la segunda dosis, esto puede deberse a diferentes motivos (han tenido COVID y no podían vacunarse, desconfiaron luego de la primer dosis, etc). Por lo que nos pareció interesante investigar cuál fue la proporción de personas que se dieron la primer dosis hasta el 26/5 pero no la segunda.
 
 ```{r, echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la proporción de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06."}
 
@@ -142,10 +142,10 @@ completitas %>%
 ```
 
 El comienzo de vacunación de las segundas dosis comenzó el 29 de marzo.
-Se puede apreciar que más de 200000 personas que se dieron la primera dosis antes del 26/05 no se dieron la segunda dosis de la vacuna en el Uruguay. Como explicamos en el gráfico anterior, 202641 personas no se dieron la segunda dosis por diferentes motivos qué no conocemos.
+Se puede apreciar que más de 200000 personas que se dieron la primera dosis antes del 26/05 no se dieron la segunda dosis de la vacuna en el Uruguay. Como explicamos en el gráfico anterior, 202641 personas no se dieron la segunda dosis por diferentes motivos que no conocemos.
  
 
-*Éste último número de personas proviene de restrle la cantidad acumulada de segundas dosis a la cantidad acumulada de primeras dosis.*
+*Éste último número de personas proviene de restarle la cantidad acumulada de segundas dosis a la cantidad acumulada de primeras dosis.*
 
 \pagebreak
 
@@ -212,7 +212,7 @@ por_depto %>% ggplot(aes(x = fecha, y = cantCasosNuevosCALC)) +
 
 Prácticamente en todo el territorio uruguayo hubo un aumento exponencial de casos positivos. En los departamentos que más se puede ver son en Montevideo, Salto y Paysandú.
 
-Afortunadamente, desde junio se puede notar un gran decrecimiento de casos positivos en todo el territorio, esto puede deberse al gran plan de vacunación que estamos teniendo (más de 4.000.000 de vacunas proporcionadas).
+Afortunadamente, desde junio se puede notar un gran decrecimiento de casos positivos en todo el territorio, esto puede deberse al amplio plan de vacunación que estamos teniendo (más de 4.000.000 de vacunas proporcionadas).
 
 A su vez, por lo que comentan las noticias, Rivera es el departamento que mejor está sobrellevando este último tiempo de la pandemia, y efectivamente viendo el gráfico, se puede concluir que es el que presenta el mayor decrecimiento de casos, encontrándose actualmente en color Amarillo en la escala de Harvard.
 
@@ -275,7 +275,7 @@ Se podría observar cierta tendencia exponencial hasta mediados de abril, el may
 
 \pagebreak
 
-Finalmente, "uniendo" éstos dos gráficos, vemos como fue la evolución de fallecidos a medida que aumenta la cantidad de personas completamente vacunadas.
+Finalmente, "uniendo" éstos dos gráficos, vemos cómo fue la evolución de fallecidos a medida que aumenta la cantidad de personas completamente vacunadas.
 
 ```{r,echo = FALSE,warning=FALSE,message=FALSE, fig.cap='Gráfico que muestra la evolución de fallecidos, a medida que aumenta la cantidad de personas completamente vacunadas.' }
 
@@ -304,7 +304,7 @@ Si bien hay dos picos de fallecidos desde el millón de personas vacunadas con a
 
 ## Descripción de la aplicación Shiny
 
-Con el objetivo de complementar el contenido de este informe y ver el avance de todo el plan de vacunación, cantidad de casos y fallecidos, nos pareció pertinente realizar una aplicación 'Shiny' de modo interactiva, en el cual se podrá elegir entre diferentes variables, dependiendo de cada pregunta y ver el avaance de las mismsas. A continuación, detallaremos que es lo que se encuentra en cada sección y cómo navegar en la aplicación:
+Con el objetivo de complementar el contenido de este informe y ver el avance de todo el plan de vacunación, cantidad de casos y fallecidos, nos pareció pertinente realizar una aplicación 'Shiny' de modo interactiva, en el cual se podrá elegir entre diferentes variables, dependiendo de cada pregunta y ver el avaance de las mismas. A continuación, detallaremos qué es lo que se encuentra en cada sección y cómo navegar en la aplicación:
 
 Dicha App se compone de la siguiente manera: al ingresar emerge una ventana que funciona como introducción y narra de que se trata la misma, además presenta a quiénes la han desarrollaron. Luego el contenido se dispone en 5 pestañas ubicadas verticalmente en el sector superior izquierdo de la pantalla.
 
@@ -323,17 +323,17 @@ Por último se decide llevar a cabo una comparación a través de un gráfico de
 
 Como comentarios finales de este informe, hemos llegado a varias conclusiones las cuales detallaremos a continuación:
 
-Con respecto al *plán de vacunación*, claramente se puede ver en todo el este estudio que la vacuna más proporcionada en la población fue la vacuna CoronaVac (creada por el laboratorio chino de Sinovac). También, como hemos mencionado anteriormente (pero es importante destacar) nos propusimos investigar cómo dicho plan podría haber influido en la cantidad de casos positivos, fallecimientos, etc.
+Con respecto al *plan de vacunación*, claramente se puede ver en todo el estudio que la vacuna más proporcionada a la población fue la vacuna CoronaVac (creada por el laboratorio chino de Sinovac). También, como hemos mencionado anteriormente (pero es importante destacar) nos propusimos investigar cómo dicho plan podría haber influido en la cantidad de casos positivos, fallecimientos, etc.
 
-Viendo los resultados de los gráficos se puede apreciar que a partir del mes de Junio, la cantidad de casos positivos diarios ha ido disminuyendo, producto de dicho plan. Uniendo éstos dos análisis (plan de vacunación y cantidad de casos positivos), se puede deducir que la vacunación es muy importante para sobrellevar esta pandemia que está afectando a todo el mundo, y que realmente la misma es muy efectiva.
+Viendo los resultados de los gráficos se puede apreciar que a partir del mes de junio la cantidad de casos positivos diarios ha ido disminuyendo debido al plan de vacunación. Uniendo estos dos análisis (plan de vacunación y cantidad de casos positivos) se puede deducir que las vacunas son muy efectivas y muy importantes para sobrellevar la pandemia.
 
 Si hablamos de la *cantidad de fallecimientos diarios*, pareciera que también vienen en descenso, pero no podríamos confirmarlo con los datos que tenemos actualizados hasta el 23/06.
 
-Como posibles extensiones a este informe, se puede seguir analizando la evolución de la pandemia en el Uruguay y ver como sigue repercutiendo el plan de vacunación con respecto a los fallecimientos y casos positivos. Por ejemplo, al día de hoy (21 de Julio de 2021), según los medios de comunicación y las noticias que nos brindan, la cantidad de casos positivos ha disminuido enormemente, estando casi todos los departamentos del territorio a nivel amarillo en la escala de Harvard, y a nivel amarillo en todo el país.
+Como posibles extensiones a este informe, se puede seguir analizando la evolución de la pandemia en el Uruguay y ver cómo sigue repercutiendo el plan de vacunación con respecto a los fallecimientos y casos positivos. Por ejemplo, al día de hoy (21 de julio de 2021), según los medios de comunicación y las noticias que nos brindan, la cantidad de casos positivos ha disminuido enormemente, estando casi todos los departamentos del territorio a nivel amarillo en la escala de Harvard, y a nivel amarillo en todo el país.
 
-Viendo esta situación, el Ministerio de Salud Pública (MSP) ha dado el 'visto bueno' para extender los horarios de los bares y restaurantes, abrir los cines (los cuales estaban cerrados desde Marzo), se ha vuelto a la presencialidad en la primaria y secundaria y se está volviendo poco a poco la presencialidad en las universidades (no se ha ido desde el inicio de la pandemia)
+Viendo esta situación, el Ministerio de Salud Pública (MSP) ha dado el 'visto bueno' para extender los horarios de los bares y restaurantes, abrir los cines (los cuales estaban cerrados desde marzo), se ha vuelto a la presencialidad en primaria y secundaria y se está volviendo poco a poco a la presencialidad en las universidades.
 
-Además, ya se alcanzaron más de **2 millones de personas vacunadas con ambas dosis** y si bien la situación sanitaria en Uruguay ha sido muy cambiante, según el Ministro de Salud Pública (Daniel Salinas) se observa una ['marcadísima incidencia del efecto de la vacuna en los nuevos casos, con un descenso abrupto'](https://ladiaria.com.uy/coronavirus/articulo/2021/7/salinas-aseguro-que-se-constato-una-marcadisima-incidencia-del-efecto-de-la-vacuna/).
+Además, ya se alcanzaron más de **2 millones de personas vacunadas con ambas dosis** y si bien la situación sanitaria en Uruguay ha sido muy cambiante, según el Ministro de Salud Pública, Daniel Salinas, se observa una ['marcadísima incidencia del efecto de la vacuna en los nuevos casos, con un descenso abrupto'](https://ladiaria.com.uy/coronavirus/articulo/2021/7/salinas-aseguro-que-se-constato-una-marcadisima-incidencia-del-efecto-de-la-vacuna/).
 
 Igualmente, como bien sabemos, el COVID-19 ha ido mutando a la largo de estos dos años, y lamentablemente ha llegado la variante *Delta* al país. Por lo que se está analizando si realmente dos dosis de la vacuna son las necesarias para combatir al virus, o si se necesita de una tercera.
 
