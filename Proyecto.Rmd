@@ -151,7 +151,7 @@ Se puede apreciar que más de 200000 personas que se dieron la primera dosis ant
 
 Por otra parte, sabemos que Montevideo y Canelones son los departamentos con mayor población de Uruguay, por lo que sería 'evidente' decir que son los lugares con mayor cantidad de vacunados. De todos modos, la vacunación en el territorio viene siendo relativamente pareja en todos los departamentos, con alguna excepción.
 
-Por ende, decidimos analizar en el siguiente diagrama de barras, si realmente **la relación vacuna/población es relativamente proporcional en éstos departamentos** (Montevideo y Canelones).
+Por ende, decidimos analizar en el siguiente diagrama de barras, si realmente es mayor la proporción de vacunados en éstos departamentos (Montevideo y Canelones) que en los demás.
 
 ```{r,echo=FALSE,warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de barras mostrando la proporción de vacunados según departamento"}
 
@@ -304,9 +304,9 @@ Si bien hay dos picos de fallecidos desde el millón de personas vacunadas con a
 
 ## Descripción de la aplicación Shiny
 
-Con el objetivo de complementar el contenido de este informe y ver el avance de todo el plan de vacunación, cantidad de casos y fallecidos, nos pareció pertinente realizar una aplicación 'Shiny' de modo interactiva, en el cual se podrá elegir entre diferentes variables, dependiendo de cada pregunta y ver el avaance de las mismas. A continuación, detallaremos qué es lo que se encuentra en cada sección y cómo navegar en la aplicación:
+Con el objetivo de complementar el contenido de este informe y ver el avance de todo el plan de vacunación, cantidad de casos y fallecidos, nos pareció pertinente realizar una aplicación 'Shiny' de forma interactiva, en el cual se podrá elegir entre diferentes variables, dependiendo de cada pregunta y ver el avance de las mismas. A continuación, detallaremos qué es lo que se encuentra en cada sección y cómo navegar en la aplicación:
 
-Dicha App se compone de la siguiente manera: al ingresar emerge una ventana que funciona como introducción y narra de que se trata la misma, además presenta a quiénes la han desarrollaron. Luego el contenido se dispone en 5 pestañas ubicadas verticalmente en el sector superior izquierdo de la pantalla.
+Dicha App se compone de la siguiente manera: al ingresar emerge una ventana que funciona como introducción y narra de que se trata la misma, además presenta a quiénes la desarrollaron. Luego el contenido se dispone en 5 pestañas ubicadas verticalmente en el sector superior izquierdo de la pantalla.
 
 La **primera pestaña** refiere a la vacunación, en esta se puede ver un mapa de Uruguay en el cual, al pasar el cursor por encima de cada departamento, se muestra la cantidad de personas que se han vacunado y cuántas de estas lo han hecho con ambas dosis.
 
