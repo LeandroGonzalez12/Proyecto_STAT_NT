@@ -55,11 +55,6 @@ ui <- dashboardPage(skin = "green",
                                 checkboxGroupInput(inputId = "dosis",
                                                    label = "Número de dosis",choices = c("primera","segunda"),selected = "segunda")
                         ),
-                        tabItem(tabName = "p2",
-                                h3("¿Se podría decir que en los departamentos más poblados, como Montevideo y Canelones el porcentaje de vacunados es mayor?",
-                                   align="center"),
-                                h4("¿Y si vemos cuántas personas han fallecido por departamento?", align="center", plotOutput("grafico2_2"))
-                        ),
                         tabItem(tabName = "p3",
                                 h4("¿Cómo fue la evolución de casos positivos dependiendo del departamento?", align="center", plotOutput("grafico2")),
                                 selectInput(inputId =  "depto", label = "Elegir departamento",choices = c("Artigas", "Canelones", "Cerro Largo", 
@@ -71,7 +66,7 @@ ui <- dashboardPage(skin = "green",
                                 dateInput(inputId = "fechita2", label = "Fecha final",value = "2021-06-25",min = "2020-04-29",max = "2021-06-25")
                         ),
                         tabItem(tabName = "p4",
-                                h3("¿Se podría decir que la cantidad de fallecidos diarios ha disminuido a medida que avanza el plan de vacunación?", 
+                                h4("¿Se podría decir que la cantidad de fallecidos diarios ha disminuido a medida que avanza el plan de vacunación?", 
                                    plotOutput("grafico4")),
                                 sliderInput("vacunitas","Personas con dos dosis:",min = 0,max = 1451040,value = c(0,1451040))
                         )
@@ -116,14 +111,6 @@ server<-function(input,output){
       facet_wrap(~ input$depto)
   )
   output$grafico2<-renderPlot({ grafico2() })
-  
-  grafico2_2 <- reactive(
-    por_depto %>% filter(people_fully %in% seq.Date(from = input$fechita1,to = input$fechita2,by = "day") & departamento %in% input$depto) %>%
-      group_by(departamento) %>% summarise(cantidad_fallecidos = sum(cantFallecidos, na.rm = TRUE)) %>%
-      ggplot(aes(y=reorder(departamento,-cantidad_fallecidos, na.rm=TRUE), x = cantidad_fallecidos)) + geom_col() +
-      labs(x = "Cantidad de fallecidos",y = "Departamentos")
-  )
-  output$grafico2_2<-renderPlot({grafico2_2()})
   
   grafico3 <- reactive(
     completitas %>% filter(fecha %in% seq.Date(from = input$fechaza1,to = input$fechaza2, by="day") & dosis %in% input$dosis) %>%

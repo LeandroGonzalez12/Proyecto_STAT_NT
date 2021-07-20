@@ -198,7 +198,6 @@ Sabemos que en el año 2020, el COVID-19 ha afectado de manera muy diferente a t
 
 Esto cambió rotundamente en el 2021, ya que a partir de ahí comenzó a haber un excesivo aumento de casos, ya sea porque en el verano la gente empezó a salir con mayor frecuencia por lo que se "cuidó" menos, no hubo un gran manejo de la pandemia, o simplemente, al ser un virus tan contagioso y con la aparición de nuevas cepas (Alpha, Beta, Gamma, Delta), el mismo mutó y desencadenó una gran cantidad de contagios.
 
-###### **Recordatorio** Como mencionamos al principio del informe, vamos a analizar los datos a partir de abril del 2020, hasta mediados de junio de 2021. 
 
 Por lo que nos pareció interesante plasmar en el siguiente gráfico, cómo han crecido (o disminuido) los contagios en los departamentos de Uruguay. Para poder ver de forma más detallada el aumento de casos, y reducir a un rango más manejable los datos, dicho gráfico lo realizamos en escala logarítimica.
 
@@ -318,30 +317,39 @@ Si bien hay dos picos de fallecidos desde el millón de personas vacunadas con a
 
 ## Descripción de la aplicación Shiny
 
-Con el objetivo de complementar el contenido de este informe, a la vez que presentarlo de una manera práctica e interactiva, llevamos a cabo el desarrollo de una aplicación shiny.
+Con el objetivo de complementar el contenido de este informe y ver el avance de todo el plan de vacunación, cantidad de casos y fallecidos, nos pareció pertinente realizar una aplicación 'Shiny' de modo interactiva, en el cual se podrá elegir entre diferentes variables, dependiendo de cada pregunta y ver el avaance de las mismsas. A continuación, detallaremos que es lo que se encuentra en cada sección y cómo navegar en la aplicación:
 
-Dicha app se compone de la siguiente manera: al ingresar emerge una ventana que funciona como introducción y narra de que se trata la misma, además presenta a quiénes la desarrollaron. Luego el contenido se dispone en 5 pestañas ubicadas verticalmente en el sector superior izquierdo de la pantalla.
+Dicha App se compone de la siguiente manera: al ingresar emerge una ventana que funciona como introducción y narra de que se trata la misma, además presenta a quiénes la han desarrollaron. Luego el contenido se dispone en 5 pestañas ubicadas verticalmente en el sector superior izquierdo de la pantalla.
 
-La primera pestaña refiere a la vacunación, en esta se puede ver un mapa de Uruguay en el cual, al pasar el cursor por encima de cada departamento, se muestra la cantidad de personas que se han vacunado y cuántas de estas lo han hecho con ambas dosis.
+La **primera pestaña** refiere a la vacunación, en esta se puede ver un mapa de Uruguay en el cual, al pasar el cursor por encima de cada departamento, se muestra la cantidad de personas que se han vacunado y cuántas de estas lo han hecho con ambas dosis.
 
-En segundo lugar se muestra según el laboratorio elegido y el rango temporal seleccionado, un gráfico que representa la cantidad de dosis suministradas por cada día en todo el territorio nacional. Debajo de este se encuentra un gráfico de barras expresado en miles de dosis, con el total acumulado de dosis por laboratorio, en las fechas elegidas.
+En el **segundo item** se muestra según el laboratorio elegido y el rango temporal seleccionado, un gráfico que representa la cantidad de dosis suministradas por cada día en todo el territorio nacional. Debajo de este se encuentra un gráfico de barras expresado en miles de dosis, con el total acumulado de dosis por laboratorio, en las fechas elegidas.
 
-La tercera pestaña de nuestra app, contiene un gráfico de línea que muestra la cantidad de dosis aplicadas a la población uruguaya, donde se puede elegir si graficar la primera dosis, la segunda, o ambas. Otra característica con la cual es posible interactuar es el rango de fechas.
+La **tercera pestaña** de nuestra App, contiene un gráfico de línea que muestra la cantidad de dosis aplicadas a la población uruguaya, donde se puede elegir si graficar la primera dosis, la segunda, o ambas. Otra característica con la cual es posible interactuar es el rango de fechas.
 
-En la cuarta pestaña se puede observar una serie temporal que representa la evolución en la cantidad de casos positivos de COVID-19. Aquí se pueden elegir tanto el departamento como la fecha inicial, y la fecha final.
+En la **cuarta pestaña** se puede observar una serie temporal que representa la evolución en la cantidad de casos positivos de COVID-19. Aquí se pueden elegir tanto el departamento como la fecha inicial, y la fecha final.
 
 Por último se decide llevar a cabo una comparación a través de un gráfico de línea, de cómo ha evolucionado la cantidad de fallecidos en Uruguay a medida que el plan de vacunación avanza.
 
 
-
 ## Conclusiones
 
-Al comienzo de dicho reporte, nos propusimos seguir el plan de vacunación. Como comentario general, la vacuna mayor aplicada fue la CoronaVac, del laboratorio Sinovac.
-También nos propusimos investigar cómo dicho plan podría haber influido en la cantidad de casos positivos, fallecimientos, etc.
-A partir del mes de Junio, la cantidad de casos positivos diarios ha ido disminuyendo, producto de dicho plan. A día de hoy, ya se alcanzaron los 2 millones de personas vacunadas con ambas dosis y si bien la situación sanitaria en Uruguay ha sido muy cambiante, según el Ministro de Salud Pública se observa una ['marcadísima incidencia del efecto de la vacuna en los nuevos casos, con un descenso abrupto'](https://ladiaria.com.uy/coronavirus/articulo/2021/7/salinas-aseguro-que-se-constato-una-marcadisima-incidencia-del-efecto-de-la-vacuna/).
-Con respecto a la cantidad de fallecimientos diarios, pareciera que también vienen en descenso, pero no podríamos confirmarlo con los datos que tenemos actualizados hasta el 23/06.
-Por esta razón, como posible extensión de este trabajo podría ser seguir la evolución mes a mes, para así poder seguir estudiando el avance de la pandemia.
-Por último, podríamos realizar un modelo para poder predecir dicho avance.
+Como comentarios finales de este informe, hemos llegado a varias conclusiones las cuales detallaremos a continuación:
+
+Con respecto al *plán de vacunación*, claramente se puede ver en todo el este estudio que la vacuna más proporcionada en la población fue la vacuna CoronaVac (creada por el laboratorio chino de Sinovac). También, como hemos mencionado anteriormente (pero es importante destacar) nos propusimos investigar cómo dicho plan podría haber influido en la cantidad de casos positivos, fallecimientos, etc.
+
+Viendo los resultados de los gráficos se puede apreciar que a partir del mes de Junio, la cantidad de casos positivos diarios ha ido disminuyendo, producto de dicho plan. Uniendo éstos dos análisis (plan de vacunación y cantidad de casos positivos), se puede deducir que la vacunación es muy importante para sobrellevar esta pandemia que está afectando a todo el mundo, y que realmente la misma es muy efectiva.
+
+Si hablamos de la *cantidad de fallecimientos diarios*, pareciera que también vienen en descenso, pero no podríamos confirmarlo con los datos que tenemos actualizados hasta el 23/06.
+
+Como posibles extensiones a este informe, se puede seguir analizando la evolución de la pandemia en el Uruguay y ver como sigue repercutiendo el plan de vacunación con respecto a los fallecimientos y casos positivos. Por ejemplo, al día de hoy (21 de Julio de 2021), según los medios de comunicación y las noticias que nos brindan, la cantidad de casos positivos ha disminuido enormemente, estando casi todos los departamentos del territorio a nivel amarillo en la escala de Harvard, y a nivel amarillo en todo el país.
+
+Viendo esta situación, el Ministerio de Salud Pública (MSP) ha dado el 'visto bueno' para extender los horarios de los bares y restaurantes, abrir los cines (los cuales estaban cerrados desde Marzo), se ha vuelto a la presencialidad en la primaria y secundaria y se está volviendo poco a poco la presencialidad en las universidades (no se ha ido desde el inicio de la pandemia)
+
+Además, ya se alcanzaron más de **2 millones de personas vacunadas con ambas dosis** y si bien la situación sanitaria en Uruguay ha sido muy cambiante, según el Ministro de Salud Pública (Daniel Salinas) se observa una ['marcadísima incidencia del efecto de la vacuna en los nuevos casos, con un descenso abrupto'](https://ladiaria.com.uy/coronavirus/articulo/2021/7/salinas-aseguro-que-se-constato-una-marcadisima-incidencia-del-efecto-de-la-vacuna/).
+
+Igualmente, como bien sabemos, el COVID-19 ha ido mutando a la largo de estos dos años, y lamentablemente ha llegado la variante *Delta* al país. Por lo que se está analizando si realmente dos dosis de la vacuna son las necesarias para combatir al virus, o si se necesita de una tercera.
+
 
  
  
