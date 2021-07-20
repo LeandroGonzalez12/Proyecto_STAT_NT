@@ -103,23 +103,6 @@ En los medios de comunicación comentaron que gran cantidad de personas se ha da
 
 ### Pregunta 2 - Hasta el 23/06, ¿todas las personas con primera dosis antes del 26/05 recibieron la segunda dosis?. Si no es así, ¿Cuántas personas no se dieron la segunda dosis?
 
-completas_pais_hasta_mayo_R<- uruguay %>% 
-  select(date, total_vaccinations, people_vaccinated) %>%
-  filter(date == "2021-05-26") 
-
-completas_pais_hasta_junio_R<- uruguay %>% 
-  select(date, total_vaccinations, people_fully_vaccinated) %>%
-  filter(date == "2021-06-23") 
-
-completas_pais<-merge(x=completas_pais_hasta_mayo_R, y=completas_pais_hasta_junio_R, all=TRUE) %>% 
-  pivot_longer(cols = c("people_vaccinated","people_fully_vaccinated"),
-               names_to = "Numero_dosis", 
-               values_to ="Cant_dosis") %>% 
-  group_by(Numero_dosis) %>% 
-  summarise(Cant_dosis = sum(Cant_dosis, na.rm=TRUE)) %>% 
-  group_by(Numero_dosis, Cant_dosis) %>% 
-  summarise(porcentaje=round(Cant_dosis/1688019*100, 2))
-
 completas_pais %>% 
   ggplot(aes(x=Numero_dosis, y=porcentaje))+
   geom_col()+ theme(aspect.ratio = 2)+
@@ -134,8 +117,8 @@ completas_pais %>%
 ```
 
 
-Se puede observar que de todas las personas que se dieron la primera dosis, un 86,4% no se dio la segunda.
-Por lo tanto, el 13,6% de los que se dieron la primera dosis, no se dieron la segunda a los 28 días. 
+Se puede observar que de todas las personas que se dieron la primera dosis, un 88,04% no se dio la segunda.
+Por lo tanto, casi el 12% de los que se dieron la primera dosis, no se dieron la segunda a los 28 días. 
 No sabemos por qué no se dieron la segunda dosis pero puede ser porque se contagiaron de COVID-19 en ese lapso de tiempo, no creen en la efectividad de la vacuna, fallecieron, se olvidaron de asistir, entre otras posibilidades. 
 
 
@@ -159,7 +142,7 @@ completitas %>%
 ```
 
 El comienzo de vacunación de las segundas dosis comenzó el 29 de marzo.
-Se puede apreciar que más de 200000 personas que se dieron la primera dosis antes del 26/05 no se dieron la segunda dosis de la vacuna en el Uruguay. Como explicamos en el gráfico anterior, 229616 personas no se dieron la segunda dosis por diferentes motivos qué no conocemos.
+Se puede apreciar que más de 200000 personas que se dieron la primera dosis antes del 26/05 no se dieron la segunda dosis de la vacuna en el Uruguay. Como explicamos en el gráfico anterior, 202641 personas no se dieron la segunda dosis por diferentes motivos qué no conocemos.
  
 
 *Éste último número de personas proviene de restrle la cantidad acumulada de segundas dosis a la cantidad acumulada de primeras dosis.*

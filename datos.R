@@ -30,7 +30,8 @@ uruguay <- uruguay %>% rename(diario_coronavac = daily_coronavac,
                               acum_pfizer = total_pfizer,primDiario_pfizer = people_pfizer,
                               segDiario_pfizer = fully_pfizer,diario_astrazeneca = daily_astrazeneca,
                               acum_astrazeneca = total_astrazeneca,primDiario_astrazeneca = people_astrazeneca,
-                              segDiario_astrazeneca = fully_astrazeneca)
+                              segDiario_astrazeneca = fully_astrazeneca) %>%
+  filter(date >= "2021-02-27" & date <="2021-06-23")
 
 
 ##GRAFICOS 1 Y 2 del Rmd
@@ -70,7 +71,7 @@ completas_pais<-merge(x=completas_pais_hasta_mayo_R, y=completas_pais_hasta_juni
   group_by(Numero_dosis) %>% 
   summarise(Cant_dosis = sum(Cant_dosis, na.rm=TRUE)) %>% 
   group_by(Numero_dosis, Cant_dosis) %>% 
-  summarise(porcentaje=round(Cant_dosis/1688019*100, 2))
+  summarise(porcentaje=round(Cant_dosis/1694513*100, 2))
 
 ##en la app se usa lo siguiente
 
@@ -89,6 +90,7 @@ completitas<-
          primera = people_vaccinated,
          segunda = people_fully_vaccinated) %>%  
   pivot_longer(cols = c("primera","segunda"),names_to = "dosis",values_to = "cantidad")
+
 
 
 #borro lo auxiliar
@@ -175,3 +177,4 @@ lab.data <- datos_mapa %>%
 
 # borro lo auxiliar
 rm(sp_depto,dframe_depto)
+
