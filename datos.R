@@ -16,6 +16,13 @@ library(shinydashboard)
 
 uruguay <- read_csv(here("data","Uruguay.csv")) #Cargamos datos de vacunacion.
 
+estadisticasUY <- read_csv("data/estadisticasUY.csv", 
+                           col_types = cols(fecha = col_date(format = "%d/%m/%Y")))
+estadisticasUY<-estadisticasUY %>% filter(between(fecha, as.Date('2021-02-27', format='%Y-%m-%d'),
+                                                  as.Date('2021-06-23', format='%Y-%m-%d')))
+
+
+
 # Se renombran para facilitar la interpretacion.
 uruguay <- uruguay %>% rename(diario_coronavac = daily_coronavac,
                               acum_coronavac = total_coronavac,primDiario_coronavac = people_coronavac,
@@ -133,7 +140,15 @@ muertes_diarias <- muertes_edad %>% group_by(date) %>%
   summarise(muertes_totales_diarias=sum(daily))
 
 personas_totalmente_vacunadas <- uruguay %>% select(date, people_fully_vaccinated)
-muertes_vacunados <- merge(muertes_diarias, personas_totalmente_vacunadas)
+
+muertes_diarias <- muertes_edad %>% group_by(date) %>% 
+  summarise(muertes_totales_diarias=sum(daily))
+
+personas_totalmente_vacunadas <- uruguay %>% select(date, people_fully_vaccinated)
+
+
+muertes_vacunas<-left_join(personas_totalmente_vacunadas, estadisticasUY, by=c('date'='fecha'))
+
 
 ## borramos lo auxiliar
 rm(muertes_edad,muertes_diarias,personas_totalmente_vacunadas)

@@ -127,10 +127,10 @@ server<-function(input,output){
                 position=position_nudge(0.1), hjust=1.2, show.legend=FALSE)
   )
   output$grafico3 <- renderPlot({ grafico3() })
-  
+
   grafico4 <- reactive(
-    muertes_vacunados %>% filter(between(people_fully_vaccinated, input$vacunitas[1], input$vacunitas[2])) %>% 
-      ggplot(aes(x=people_fully_vaccinated, y=muertes_totales_diarias)) +geom_line()+ labs(x='Personas vacunadas con ambas dosis', 
+    muertes_vacunas %>% filter(between(people_fully_vaccinated, input$vacunitas[1], input$vacunitas[2])) %>% 
+      ggplot(aes(x=people_fully_vaccinated, y=cantFallecidos)) +geom_line()+ labs(x='Personas vacunadas con ambas dosis', 
                                                                                            y='Cantidad de fallecidos por día') +
       stat_wb_hbar(w.band = c(input$vacunitas[1],input$vacunitas[2]), size = 1.2,color='red') + stat_wb_mean(color='red',
                                                                                                              w.band =  c(input$vacunitas[1],input$vacunitas[2]),vjust = 7,  label.fmt  = "Promedio de muertes diarias = %.3g") +

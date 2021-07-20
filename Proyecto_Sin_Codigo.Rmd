@@ -3,8 +3,8 @@ title: "Proyecto Final - Nuevas Tecnologias para el Análisis de datos  STAT NT"
 author: "Eugenia Bagnasco - Lucas Caram - Federico Colombo - Leandro Gonzalez"
 date: "09/07/2021"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 lang: "es"
 urlcolor: blue
 ---
@@ -268,7 +268,7 @@ Primero que nada, veamos cómo se comportan las variables independientemente, o 
 
 ```{r, echo = FALSE,warning=FALSE,message=FALSE,fig.align='center',fig.cap='Gráfico temporal que muestra la evolución de la cantidad de personas vacunadas con ambas dosis.'}
 
-ggplot(data=muertes_vacunados)+geom_line(aes(x=date, y=people_fully_vaccinated)) + 
+ggplot(data=muertes_vacunas)+geom_line(aes(x=date, y=people_fully_vaccinated)) + 
   labs(x='Fecha', y='Personas vacunadas con ambas dosis')+
   scale_x_date(date_breaks = "15 days") +
   theme(axis.text.x = element_text(size = 9, angle = 300, hjust = 0))
@@ -279,15 +279,16 @@ Se puede ver un claro crecimiento hasta mediados de mayo.Posteriormente, hasta j
 
 ```{r,echo = FALSE,warning=FALSE,message=FALSE, fig.cap='Gráfico temporal que muestra la evolución en la cantidad de fallecidos diarios.'}
 
-ggplot(data=muertes_vacunados,aes(x=date, y=muertes_totales_diarias))+geom_line() +
+estadisticasUY %>%
+  ggplot(aes(x=fecha, y=cantFallecidos))+geom_line() +
   labs(x='Fecha', y='Cantidad de fallecidos por día')+ 
-   stat_peaks(span = NULL, color = "red") +
+  stat_peaks(span = NULL, color = "red") +
   stat_peaks(span = NULL, geom = "text", vjust = 0.6,hjust=0.8, color = "red", 
              aes(label = paste(stat(y.label), "fallecidos,\n el día", stat(x.label)))) + 
   theme(axis.text.x = element_text(size = 9, angle = 300, hjust = 0))
 ```
 
-Se podría observar cierta tendencia exponencial hasta mediados de abril, el mayor pico de fallecidos se presenta el día 19/06/2021 con 91 muertes.
+Se podría observar cierta tendencia exponencial hasta mediados de abril, el mayor pico de fallecidos se presenta el día 09/04/2021 con 88 muertes.
 
 \pagebreak
 
@@ -296,7 +297,7 @@ Finalmente, "uniendo" éstos dos gráficos, vemos como fue la evolución de fall
 ```{r,echo = FALSE,warning=FALSE,message=FALSE, fig.cap='Gráfico que muestra la evolución de fallecidos, a medida que aumenta la cantidad de personas completamente vacunadas.' }
 
 
-ggplot(data=muertes_vacunados,aes(x=people_fully_vaccinated, y=muertes_totales_diarias)) +
+ggplot(data=muertes_vacunas,aes(x=people_fully_vaccinated, y=cantFallecidos)) +
   geom_line()+ labs(x='Personas vacunadas con ambas dosis', 
                     y='Cantidad de fallecidos por día') +
   stat_wb_hbar(w.band = c(250000,1000000), size = 1.2,color='red') +
@@ -307,6 +308,9 @@ ggplot(data=muertes_vacunados,aes(x=people_fully_vaccinated, y=muertes_totales_d
                w.band =  c(1000000,1500000), vjust = -3, hjust=0.4,color='red') +
   scale_x_continuous(n.breaks =8)
 ```
+
+
+
 
 Se nota que hasta las 250.000 personas vacunadas con ambas dosis, podemos ver una tendencia a aumentar la cantidad de fallecidos diarios. En promedio, desde los 250.000 hasta 1.000.000 de personas completamente vacunadas, 57,9 personas fallecieron diariamente. 
 
