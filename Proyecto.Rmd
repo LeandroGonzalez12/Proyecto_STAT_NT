@@ -266,9 +266,9 @@ estadisticasUY %>%
   ggplot(aes(x=fecha, y=cantFallecidos))+geom_line() +
   labs(x='Fecha', y='Cantidad de fallecidos por día')+ 
   stat_peaks(span = NULL, color = "red") +
-  stat_peaks(span = NULL, geom = "text", vjust = 0.6,hjust=0.8, color = "red", 
-             aes(label = paste(stat(y.label), "fallecidos,\n el día", stat(x.label)))) + 
-  theme(axis.text.x = element_text(size = 9, angle = 300, hjust = 0))
+  stat_peaks(span = NULL, geom = "text", vjust =-0.4 ,hjust=0.8, color = "red", 
+             aes(label = paste(stat(y.label), "fallecidos"))) + 
+  theme(axis.text.x = element_text(size = 9, hjust = 0))
 ```
 
 Se podría observar cierta tendencia exponencial hasta mediados de abril, el mayor pico de fallecidos se presenta el día 09/04/2021 con 88 muertes.
