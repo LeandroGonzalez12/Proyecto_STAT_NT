@@ -123,7 +123,7 @@ No sabemos por qué no se dieron la segunda dosis pero puede ser porque se conta
 
 
 
-**¿Y si analizamos según las fechas?**
+**¿Y si analizamos según país?**
 
 ```{r, echo=FALSE, warning=FALSE,message=FALSE, fig.align='center',fig.cap="Gráfico de líneas mostrando la cantidad de personas vacunadas con primera dosis hasta el 26/05 y segunda dosis hasta el 23/06 a nivel país"}
 
