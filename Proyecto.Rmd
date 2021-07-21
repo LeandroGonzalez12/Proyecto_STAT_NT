@@ -304,7 +304,8 @@ Si bien hay dos picos de fallecidos desde el millón de personas vacunadas con a
 
 ## Descripción de la aplicación Shiny
 
-Con el objetivo de complementar el contenido de este informe y ver el avance de todo el plan de vacunación, cantidad de casos y fallecidos, nos pareció pertinente realizar una aplicación 'Shiny' de forma interactiva, en el cual se podrá elegir entre diferentes variables, dependiendo de cada pregunta y ver el avance de las mismas. A continuación, detallaremos qué es lo que se encuentra en cada sección y cómo navegar en la aplicación:
+Con el objetivo de complementar el contenido de este informe y ver el avance de todo el plan de vacunación, cantidad de casos y fallecidos, nos pareció pertinente realizar una aplicación 'Shiny' de forma interactiva, en el cual se podrá elegir entre diferentes variables, dependiendo de cada pregunta y ver el avance de las mismas. Para ingresar a la aplicación online haga click [aquí](https://lucascaram.shinyapps.io/Proyecto_STAT_NT/).
+A continuación, detallaremos qué es lo que se encuentra en cada sección y cómo navegar en la aplicación:
 
 Dicha App se compone de la siguiente manera: al ingresar emerge una ventana que funciona como introducción y narra de que se trata la misma, además presenta a quiénes la desarrollaron. Luego el contenido se dispone en 5 pestañas ubicadas verticalmente en el sector superior izquierdo de la pantalla.
 
